@@ -1,0 +1,32 @@
+#login-form{
+    width: 400px;
+    margin: 150px auto;
+    box-shadow: 2px 2px 2px 2px #D3D3D3;
+}
+
+input[type=text], input[type=password], input[type=submit] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 5px;
+    
+}
+
+input[type=text], input[type=password], input[type=submit]{
+    margin: 10px 0px;
+}
+
+.sign-in-button{
+    border: none;
+    background: #5f80b5;
+    color: #ffffff;
+}
+
+.form-header{
+    text-align: center;
+    padding: 10px;
+}
+
+#content{
+    padding: 10px;
+    
+}
