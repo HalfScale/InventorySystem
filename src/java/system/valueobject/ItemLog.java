@@ -6,20 +6,23 @@
 package system.valueobject;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  *
  * @author Muffin
  */
-public class Item {
-    
+public class ItemLog {
     private int id = -1;
+    private int itemId = -1;
     private String name = "";
     private String code = "";
     private String description = "";
     private BigDecimal price = BigDecimal.ZERO;
     private BigDecimal resellerPrice = BigDecimal.ZERO;
-    private int stock = 0;
+    private int stock  = 0;
+    private String action = "";
+    private Date datetime = null;
 
     public int getId() {
         return id;
@@ -28,7 +31,15 @@ public class Item {
     public void setId(int id) {
         this.id = id;
     }
-    
+
+    public int getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
+    }
+
     public String getName() {
         return name;
     }
@@ -57,16 +68,16 @@ public class Item {
         return price;
     }
 
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
     public BigDecimal getResellerPrice() {
         return resellerPrice;
     }
 
-    public void setResellerPrice(BigDecimal reseller_price) {
-        this.resellerPrice = reseller_price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setResellerPrice(BigDecimal resellerPrice) {
+        this.resellerPrice = resellerPrice;
     }
 
     public int getStock() {
@@ -76,6 +87,21 @@ public class Item {
     public void setStock(int stock) {
         this.stock = stock;
     }
-    
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public Date getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(Date datetime) {
+        this.datetime = datetime;
+    }
     
 }

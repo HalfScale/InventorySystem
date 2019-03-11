@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import system.util.DbUtil;
+import system.valueobject.User;
 
 /**
  *
@@ -95,15 +96,15 @@ public class SystemLogin extends HttpServlet {
         
         try {
             // query the given user and pass
-            boolean isFound = dbUtil.getUser(user, pass);
+            User activeUser = dbUtil.getUser(user, pass);
             
-            if(isFound) {
-                request.getSession().setAttribute("is_login", isFound);
-                request.setAttribute("active_user", user);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("SystemController");
-                dispatcher.forward(request, response);
+            if(activeUser != null) {
+                request.getSession().setAttribute("active_user", activeUser);
+                System.out.println("User " + activeUser.getName() + " logged in.");
+                response.sendRedirect(request.getContextPath() + "/system-home/home.jsp");
             }else {
-                System.out.println("false");
+                System.out.println("User not existing");
+                response.sendRedirect(request.getContextPath() + "/");
             }
             //then check if its a valid user
         }catch(Exception e) {

@@ -9,10 +9,21 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import javax.sql.DataSource;
 import system.valueobject.Item;
+import system.valueobject.ItemArchive;
+import system.valueobject.ItemLog;
+import system.valueobject.User;
 
 /**
  *
@@ -35,7 +46,7 @@ public class DbUtil {
         try {
             items = new ArrayList<>();
             myConn = datasource.getConnection();
-            String query = "select * from items";
+            String query = "select * from item";
             
             myStmt = myConn.prepareStatement(query);
             
@@ -48,6 +59,7 @@ public class DbUtil {
                 String code = myRs.getString("code");
                 String description = myRs.getString("description");
                 BigDecimal price = myRs.getBigDecimal("price");
+                BigDecimal resellerPrice = myRs.getBigDecimal("reseller_price");
                 int stock = myRs.getInt("stock");
                 
                 System.out.println("item name:" + name);
@@ -57,6 +69,7 @@ public class DbUtil {
                 item.setCode(code);
                 item.setDescription(description);
                 item.setPrice(price);
+                item.setResellerPrice(resellerPrice);
                 item.setStock(stock);
                 
                 items.add(item);
@@ -77,14 +90,15 @@ public class DbUtil {
         try {
             
             myConn = datasource.getConnection();
-            String query = "insert into items(name, code, description, price, stock) values(?, ?, ?, ?, ?)";
+            String query = "insert into item(name, code, description, price, reseller_price, stock) values(?, ?, ?, ?, ?, ?)";
             
             myStmt = myConn.prepareStatement(query);
             myStmt.setString(1, item.getName());
             myStmt.setString(2, item.getCode());
             myStmt.setString(3, item.getDescription());
             myStmt.setBigDecimal(4, item.getPrice());
-            myStmt.setInt(5, item.getStock());
+            myStmt.setBigDecimal(5, item.getResellerPrice());
+            myStmt.setInt(6, item.getStock());
             
             myStmt.execute();
         
@@ -93,12 +107,12 @@ public class DbUtil {
         }
     }
 
-    public boolean getUser(String user, String pass) throws Exception{
+    public User getUser(String user, String pass) throws Exception{
         
         Connection myConn = null;
         PreparedStatement myStmt = null;
         ResultSet myRs = null;
-        boolean userIsFound = false;
+        User activeUser = null;
         
         try {
             myConn = datasource.getConnection();
@@ -111,10 +125,15 @@ public class DbUtil {
             myRs = myStmt.executeQuery();
             
             if (myRs.next()) {
-                userIsFound = true;
+                activeUser = new User();
+                int id = myRs.getInt("id");
+                String name = myRs.getString("name");
+                
+                activeUser.setId(id);
+                activeUser.setName(name);
             }
             
-            return userIsFound;
+            return activeUser;
         }finally {
             close(myConn, myStmt, myRs);
         }
@@ -146,7 +165,7 @@ public class DbUtil {
         try {
             
             myConn = datasource.getConnection();
-            String query = "select * from items where id = ?";
+            String query = "select * from item where id = ?";
             
             myStmt = myConn.prepareStatement(query);
             myStmt.setInt(1, itemId);
@@ -159,6 +178,7 @@ public class DbUtil {
                 String code = myRs.getString("code");
                 String description = myRs.getString("description");
                 BigDecimal price = myRs.getBigDecimal("price");
+                BigDecimal resellerPrice = myRs.getBigDecimal("reseller_price");
                 int stock = myRs.getInt("stock");
                 
                 item = new Item();
@@ -167,6 +187,7 @@ public class DbUtil {
                 item.setCode(code);
                 item.setDescription(description);
                 item.setPrice(price);
+                item.setResellerPrice(resellerPrice);
                 item.setStock(stock);
             }
             
@@ -184,16 +205,16 @@ public class DbUtil {
         try {
             
             myConn = datasource.getConnection();
-            String query = "update items set name = ? ,code = ?, description = ?, price = ?, stock = ?"
-                    + " where id = ?";
-            
+            String query = "update item set name = ?, code = ?, description = ?, price = ?, reseller_price = ?, "
+                    + "stock = ? where id = ?";
             myStmt = myConn.prepareStatement(query);
             myStmt.setString(1, item.getName());
             myStmt.setString(2, item.getCode());
             myStmt.setString(3, item.getDescription());
             myStmt.setBigDecimal(4, item.getPrice());
-            myStmt.setInt(5, item.getStock());
-            myStmt.setInt(6, item.getId());
+            myStmt.setBigDecimal(5, item.getResellerPrice());
+            myStmt.setInt(6, item.getStock());
+            myStmt.setInt(7, item.getId());
             
             myStmt.execute();
         }finally{
@@ -208,7 +229,7 @@ public class DbUtil {
         
         try {
             myConn = datasource.getConnection();
-            String query = "delete from items where id = ?";
+            String query = "delete from item where id = ?";
             
             myStmt = myConn.prepareStatement(query);
             myStmt.setInt(1, itemId);
@@ -217,6 +238,105 @@ public class DbUtil {
         }finally {
             close(myConn, myStmt, null);
         }
+    }
+
+    public List<ItemLog> viewItemHistory(int targetId) throws Exception{
+        
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        List<ItemLog> itemLogs;
+        
+        try{
+            itemLogs = new ArrayList<>();
+            myConn = datasource.getConnection();
+            String query = "select * from item_log where item_id = ? order by id desc";
+
+            myStmt = myConn.prepareStatement(query);
+            myStmt.setInt(1, targetId);
+
+            myRs = myStmt.executeQuery();
+            
+            while(myRs.next()) {
+                int id = myRs.getInt("id");
+                int itemId = myRs.getInt("item_id");
+                String name = myRs.getString("name");
+                String code = myRs.getString("code");
+                String description = myRs.getString("description");
+                BigDecimal price = myRs.getBigDecimal("price");
+                BigDecimal resellerPrice = myRs.getBigDecimal("reseller_price");
+                int stock = myRs.getInt("stock");
+                Timestamp datetime = myRs.getTimestamp("datetime");
+                String action = myRs.getString("action");
+                
+                //We use LocalDateTime since we need to use TimeZone "UTC"
+                //since timestamp doesn't have a timezone, we use LocalDateTime
+                
+                ItemLog itemLog = new ItemLog();
+                itemLog.setId(id);
+                itemLog.setItemId(itemId);
+                itemLog.setName(name);
+                itemLog.setCode(code);
+                itemLog.setDescription(description);
+                itemLog.setPrice(price);
+                itemLog.setResellerPrice(resellerPrice);
+                itemLog.setStock(stock);
+                itemLog.setAction(action);
+                itemLog.setDatetime(datetime);
+                itemLogs.add(itemLog);
+            }
+            
+            return itemLogs;
+        
+        }finally{
+            close(myConn, myStmt, myRs);
+        }
+    }
+
+    public List<ItemArchive> viewItemArchive() throws Exception{
+        
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        List<ItemArchive> itemArchive = null;
+        
+        try{
+            itemArchive = new ArrayList<>();
+            myConn = datasource.getConnection();
+            String query = "select * from item_archive order by datetime desc";
+            
+            myStmt = myConn.prepareStatement(query);
+            
+            myRs = myStmt.executeQuery();
+            
+            while(myRs.next()) {
+                String name = myRs.getString("name");
+                String code = myRs.getString("code");
+                String description = myRs.getString("description");
+                BigDecimal price = myRs.getBigDecimal("price");
+                BigDecimal resellerPrice = myRs.getBigDecimal("reseller_price");
+                int stock = myRs.getInt("stock");
+                String action = myRs.getString("action");
+                Timestamp timestamp = myRs.getTimestamp("datetime");
+                
+                ItemArchive item = new ItemArchive();
+                item.setName(name);
+                item.setCode(code);
+                item.setDescription(description);
+                item.setPrice(price);
+                item.setResellerPrice(resellerPrice);
+                item.setStock(stock);
+                item.setAction(action);
+                item.setDatetime(timestamp);
+                
+                itemArchive.add(item);
+            }
+            
+        }finally {
+            close(myConn, myStmt, myRs);
+        }
+        
+        return itemArchive;
     }
     
 }

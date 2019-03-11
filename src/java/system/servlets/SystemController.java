@@ -6,10 +6,12 @@
 package system.servlets;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
@@ -20,8 +22,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import system.util.GsonUTCDateAdapter;
 import system.util.DbUtil;
 import system.valueobject.Item;
+import system.valueobject.ItemArchive;
+import system.valueobject.ItemLog;
+import system.valueobject.User;
 
 /**
  *
@@ -81,9 +87,7 @@ public class SystemController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String command = request.getParameter("command");
         
-        if (command == null) {
-            command = "LIST";
-        }
+        command = command != null ? command : "LIST";
         
         try {
             switch (command) {
@@ -96,6 +100,10 @@ public class SystemController extends HttpServlet {
                 case "UPDATE": updateItem(request, response);
                     break;
                 case "DELETE": deleteItem(request, response);
+                    break;
+                case "HISTORY": viewItemHistory(request, response);
+                    break;
+                case "ARCHIVE": viewItemArchive(request, response);
                     break;
                 case "LOGOUT": logout(request, response);
                     break;
@@ -129,6 +137,8 @@ public class SystemController extends HttpServlet {
                     break;
                 case "ADD": addItem(request, response);
                     break;
+                case "UPDATE": updateItem(request, response);
+                    break;
                 default:
                     listItems(request, response);
             }
@@ -150,7 +160,7 @@ public class SystemController extends HttpServlet {
     private void listItems(HttpServletRequest request, HttpServletResponse response) 
         throws Exception{
         
-        try {
+//        try {
               //get all the items the convert it to json string
               Gson gson = new Gson();
               List<Item> items = dbUtil.getAllItems();
@@ -166,21 +176,20 @@ public class SystemController extends HttpServlet {
               System.out.println("result" + result);
               out.println(result);
             
-        }catch(Exception e){
-            throw new ServletException(e);
-        }
+//        }catch(Exception e){
+//            throw new ServletException(e);
+//        }
     }
 
     private void logout(HttpServletRequest request, HttpServletResponse response) 
         throws Exception{
         
-        Boolean user = (Boolean) request.getSession().getAttribute("is_login");
+        User user = (User) request.getSession().getAttribute("active_user");
+        System.out.println("User " + user.getName() + " logged out.");
+        request.getSession().removeAttribute("active_user");
         
-        if (user != null) {
-            request.getSession().removeAttribute("is_login");
-        }
         
-        response.sendRedirect(request.getContextPath() + "/login.jsp");
+        response.sendRedirect(request.getContextPath() + "/");
         
     }
 
@@ -193,10 +202,6 @@ public class SystemController extends HttpServlet {
         Item item = gson.fromJson(itemParam, Item.class);
         
         dbUtil.addItem(item);
-        
-        PrintWriter out = response.getWriter();
-        response.setHeader("Content-Type", "application/json");
-        out.println(gson.toJson(item, Item.class));
     }
 
     private void loadItem(HttpServletRequest request, HttpServletResponse response) 
@@ -206,33 +211,28 @@ public class SystemController extends HttpServlet {
         
         Item item = dbUtil.loadItem(Integer.valueOf(itemId));
         
-        request.setAttribute("item", item);
+        Gson gson = new Gson();
+        String jsonItem = gson.toJson(item, Item.class);
         
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/update-item-page.jsp");
-        dispatcher.forward(request, response);
+        response.setHeader("Content-Type", "application/json");
+        PrintWriter out = response.getWriter();
+        out.println(jsonItem);
+        
     }
 
     private void updateItem(HttpServletRequest request, HttpServletResponse response) 
         throws Exception{
        
-        String id = request.getParameter("itemId");
-        String name = request.getParameter("name");
-        String code = request.getParameter("code");
-        String description = request.getParameter("description");
-        String price = request.getParameter("price");
-        String stock = request.getParameter("stock");
+        String param = request.getParameter("param");
+        Gson gson = new Gson();
         
-        Item item = new Item();
-        item.setId(Integer.valueOf(id));
-        item.setName(name);
-        item.setCode(code);
-        item.setDescription(description);
-        item.setPrice(new BigDecimal(price));
-        item.setStock(Integer.valueOf(stock));
+        Item item = gson.fromJson(param, Item.class);
         
         dbUtil.updateItem(item);
         
-        response.sendRedirect(request.getContextPath() + "/SystemController");
+        // we stopped at updating
+        PrintWriter out = response.getWriter();
+        out.println(item.getId());
     }
 
     private void deleteItem(HttpServletRequest request, HttpServletResponse response) 
@@ -242,7 +242,40 @@ public class SystemController extends HttpServlet {
         
         dbUtil.deleteItem(Integer.valueOf(itemId));
         
-        response.sendRedirect(request.getContextPath() + "/SystemController");
+        PrintWriter out = response.getWriter();
+        out.println(itemId);
+//        response.sendRedirect(request.getContextPath() + "/SystemController");
+    }
+
+    private void viewItemHistory(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Date.class, new GsonUTCDateAdapter())
+                .create();
+        
+        String itemId = request.getParameter("itemId");
+        List<ItemLog> itemLogs = dbUtil.viewItemHistory(Integer.parseInt(itemId));
+        String result = gson.toJson(itemLogs);
+        
+        PrintWriter out = response.getWriter();
+        response.setHeader("Content-Type", "application/json");
+        out.println(result);
+    }
+
+    private void viewItemArchive(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Date.class, new GsonUTCDateAdapter())
+                .create();
+        
+        List<ItemArchive> items = dbUtil.viewItemArchive();
+        String result = gson.toJson(items);
+        
+        PrintWriter out = response.getWriter();
+        response.setHeader("Content-Type", "application/json");
+        out.println(result);
     }
 
 }

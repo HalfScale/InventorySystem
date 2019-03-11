@@ -11,6 +11,17 @@
     </session-config>
     
     <welcome-file-list>
-        <welcome-file>login.jsp</welcome-file>
+        <welcome-file>/index.html</welcome-file>
     </welcome-file-list>
+    
+    <filter>
+        <filter-name>UserSessionFilter</filter-name>
+        <filter-class>system.filters.UserSessionFilter</filter-class>
+    </filter>
+    
+<!--    <filter-mapping>
+        <filter-name>UserSessionFilter</filter-name>
+        <url-pattern>/home.jsp</url-pattern>
+        <url-pattern>/item-list.jsp</url-pattern>
+    </filter-mapping>-->
 </web-app>
