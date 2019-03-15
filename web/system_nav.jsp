@@ -12,11 +12,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
         <link type="text/css" rel="stylesheet" href="../css/general.css">
+        <script src="../script/util.js"></script>
     </head>
     <body>
-        <%--<c:url value="/SystemController" var="logoutURL">--%>
-            <%--<c:param name="command" value="LOGOUT" />--%>
-        <%--</c:url>--%>
         <div id="test-element" data-itemId="">
         <div class="side-nav">
             <a href="${pageContext.request.contextPath}/system-home/home.jsp">Home</a>

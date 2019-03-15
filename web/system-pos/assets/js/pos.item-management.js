@@ -13,17 +13,30 @@ var itemTotalAmount = 0;
 checkoutBttn.disabled = true;
 
 setModalOkBttn.onclick = function() {
-    if(modalQtyInput.value <= 0){
-        alert('Quantity should be greater than 0');
+    if(!filterInput(modalQtyInput.value, /^[1-9]\d*$/)){
+        alert('Invalid input!');
         return;
     }
-        
-    currentItemMap['cartQuantity'] = modalQtyInput.value;
-//    console.log('currentItemMap', currentItemMap);
     
-    cartItems.appendChild(createCartItemBox(currentItemMap));
+    if(currentItemMap['stock'] >= modalQtyInput.value) {
+        currentItemMap['cartQuantity'] = modalQtyInput.value;
+    //    console.log('currentItemMap', currentItemMap);
+        var itemBox = createCartItemBox(currentItemMap);
+
+        if (isDuplicate(cartItems, itemBox.dataset['itemId'])) {
+            console.log('this item id' + itemBox.dataset['itemId'] + ' is duplicate');
+            alert('Duplicate items are not allowed');
+            return false;
+        }
+    }else {
+        alert('Insufficient item stock!');
+    }
+    
+    itemTotalAmount += parseFloat(itemBox.dataset['itemSubtotal']);
+    cartItems.appendChild(itemBox);
     checkoutBttn.innerHTML = 'Checkout -> &#8369;' + toTwoDecimal(itemTotalAmount);
     checkoutBttn.disabled = false;
+    
     settingModal.style.display = 'none';
 };
 
@@ -49,6 +62,7 @@ cartItems.addEventListener('click', function(event) {
 itemRow.addEventListener('click', function(event) {
     console.log(event.target.parentNode);
     modalQtyInput.value = 1;
+    
     var row = event.target.parentNode;
     
     var xmlhttp = new XMLHttpRequest();
@@ -64,6 +78,7 @@ itemRow.addEventListener('click', function(event) {
             console.log('query result', this.responseText);
             currentItemMap = JSON.parse(this.responseText);
             settingModal.style.display = 'block';
+            modalQtyInput.focus();
         }
     }
     
@@ -71,11 +86,12 @@ itemRow.addEventListener('click', function(event) {
 });
 
 function createCartItemBox(data) {
+    var subTotal = data.cartQuantity * data.price;
     var container = document.createElement('div');
     container.className += ' cart-item-box';
-    var subTotal = data.cartQuantity * data.price;
+    container.dataset['itemId'] = data.id;
+    container.dataset['itemSubtotal'] = subTotal;
     // for displaying checkout total amount
-    itemTotalAmount += subTotal;
     
     // sections of div box (3 sections)
     var firstSection = document.createElement('section');
@@ -113,28 +129,16 @@ function createCartItemBox(data) {
     return container;
 }
 
-function findParentElem(element, targetParent) {
-    while(element.parentNode) {
-        element = element.parentNode;
-        
-        //To stop the loop for reaching the unexisting parent
-        // causing undefined errors
-        if(element.tagName == null){
-            break;
-        }
-        
-        var isFound = element.classList.contains(targetParent);
-        
-//        console.log('isFound?', isFound, 'element->', element);
-        if (isFound) {
-//            console.log('target element found!');
-            return element;
+function isDuplicate(parentElem, targetId) {
+    var children = parentElem.children;
+    
+    for(var i = 0; i < children.length; i++) {
+        var elemId = parentElem.children[i];
+        if (elemId.dataset['itemId'] === targetId) {
+            console.log('isDuplicate');
+            return true;
         }
     }
     
-    return null;
-}
-
-function toTwoDecimal(num) {
-    return parseFloat(num).toFixed(2);
+    return false;
 }
