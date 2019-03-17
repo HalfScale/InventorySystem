@@ -90,6 +90,30 @@
             </div>
         </div>
         
+        <div id="checkout-modal">
+            
+            <div class="checkout-modal-content">
+                
+                <div class="pos-modal-header">
+                </div>
+                <div class="checkout-modal-body">
+                    <section>
+                        <span>TOTAL OVERVIEW</span>
+                    </section>
+                    
+                    <section>
+                        <h3 class="checkout-total"></h3>
+                    </section>
+                    
+                    <section>
+                        <button class="checkout-confirm">CHECKOUT</button>
+                        <button class="checkout-cancel">CANCEL</button>
+                    </section>
+                </div>
+                
+            </div>
+        </div>
+        
         <script src="assets/js/pos.item-table.js"></script>
         <script src="assets/js/pos.item-management.js"></script>
     </body>
