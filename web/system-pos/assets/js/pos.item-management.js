@@ -1,26 +1,41 @@
 
-var itemRow = document.querySelector('.pos-table-body');
+var itemTable = document.querySelector('.pos-table-body');
 var settingModal = document.querySelector('#pos-quantity-modal');
 var setModalOkBttn = document.querySelector('.pos-modal-ok-button');
 var setModalCancelBttn = document.querySelector('.pos-modal-cancel-button');
+var checkoutModal = document.querySelector("#checkout-modal");
 
 var modalQtyInput = document.querySelector('.pos-modal-setting-input');
 var cartItems = document.querySelector('#cart-item-list');
 var checkoutBttn = document.querySelector("#checkout-button");
+var checkoutCancelBttn = document.querySelector(".checkout-cancel");
 
 var currentItemMap;
 var itemTotalAmount = 0;
+//initialize checkout button
+checkoutBttn.setAttribute('title', 0);
 checkoutBttn.disabled = true;
 
 setModalOkBttn.onclick = function() {
+    var itemRow = itemTable.children;
+    console.log('itemRow', itemRow);
+    
     if(!filterInput(modalQtyInput.value, /^[1-9]\d*$/)){
         alert('Invalid input!');
         return;
     }
     
     if(currentItemMap['stock'] >= modalQtyInput.value) {
-        currentItemMap['cartQuantity'] = modalQtyInput.value;
+        var quantity = modalQtyInput.value;
+        var stock = currentItemMap['stock'];
+        currentItemMap['cartQuantity'] = quantity;
     //    console.log('currentItemMap', currentItemMap);
+        for(var i = 0; i < itemRow.length; i++){
+            if (itemRow[i].dataset['itemId'] == currentItemMap['id'] ) {
+                itemRow[i].children[5].innerHTML = stock - quantity;
+                break;
+            }
+        }
         var itemBox = createCartItemBox(currentItemMap);
 
         if (isDuplicate(cartItems, itemBox.dataset['itemId'])) {
@@ -34,6 +49,7 @@ setModalOkBttn.onclick = function() {
     
     itemTotalAmount += parseFloat(itemBox.dataset['itemSubtotal']);
     cartItems.appendChild(itemBox);
+    checkoutBttn.setAttribute('title', itemTotalAmount);
     checkoutBttn.innerHTML = 'Checkout -> &#8369;' + toTwoDecimal(itemTotalAmount);
     checkoutBttn.disabled = false;
     
@@ -44,22 +60,57 @@ setModalCancelBttn.onclick = function() {
     settingModal.style.display = 'none';
 };
 
+checkoutBttn.onclick = function() {
+    console.log('cart items', cartItems.children);
+    var children = cartItems.children;
+    for(var i = 0; i < children.length; i++) {
+        var qty = children[i].querySelector('.item-quantity');
+        console.log('qty', qty.getAttribute('title'));
+        console.log('subtotal', children[i].dataset['itemSubtotal']);
+    }
+    
+    var checkoutTotal = checkoutModal.querySelector('.checkout-total');
+    var total = checkoutBttn.getAttribute('title');
+    checkoutTotal.innerHTML = '&#8369;' + parseFloat(total).toFixed(2);
+    checkoutModal.style.display = 'block';
+}
+
+checkoutCancelBttn.onclick = function() {
+    checkoutModal.style.display = 'none';
+}
+
 cartItems.addEventListener('click', function(event) {
    if(!event.target.matches('.item-remove-bttn')) return;
    
+   //Removes the cart items
    var sibling = event.target.previousElementSibling;
    var totalAmount = sibling.getAttribute('title');
    var divBox = findParentElem(event.target, 'cart-item-box');
    cartItems.removeChild(divBox);
    
    itemTotalAmount -= totalAmount;
+   checkoutBttn.setAttribute('title', itemTotalAmount);
    if (itemTotalAmount == 0) {
        checkoutBttn.disabled = true;
    }
+   
+   //Search from the item table the removed cart item id
+   //Then gets its stock
+   //Then add it to the cartItem quantity
+   var itemRow = itemTable.children;
+   for(var i = 0; i < itemRow.length; i++){
+        if (itemRow[i].dataset['itemId'] == divBox.dataset['itemId']) {
+            var cartItemQuantity = divBox.querySelector('.item-quantity').getAttribute('title');
+            var itemStock = itemRow[i].children[5].innerHTML;
+            itemRow[i].children[5].innerHTML = parseFloat(cartItemQuantity) + parseFloat(itemStock);
+            break;
+        }
+    }
+        
    checkoutBttn.innerHTML = 'Checkout -> &#8369;' + toTwoDecimal(itemTotalAmount);
 });
 
-itemRow.addEventListener('click', function(event) {
+itemTable.addEventListener('click', function(event) {
     console.log(event.target.parentNode);
     modalQtyInput.value = 1;
     
@@ -100,15 +151,21 @@ function createCartItemBox(data) {
     
     var itemName = document.createElement('span');
     itemName.innerHTML = data.name;
+    itemName.className += 'item-name';
     var itemCode = document.createElement('span');
     itemCode.innerHTML = data.code;
+    itemCode.className += 'item-code';
     var itemPrice = document.createElement('span');
     itemPrice.innerHTML = 'Price: &#8369; ' + toTwoDecimal(data.price);
+    itemPrice.className += 'item-price';
     var itemQuantity = document.createElement('span');
     itemQuantity.innerHTML = 'Qty: ' + data.cartQuantity;
+    itemQuantity.setAttribute('title', data.cartQuantity);
+    itemQuantity.className += 'item-quantity';
     var itemTotal = document.createElement('span');
     itemTotal.innerHTML = 'Total price: &#8369; '+ toTwoDecimal(subTotal);
     itemTotal.setAttribute('title', toTwoDecimal(subTotal));
+    itemTotal.className += 'item-total';
     var removeBttn = document.createElement('u');
     removeBttn.innerHTML = 'Remove';
     removeBttn.className += 'item-remove-bttn clicky';
