@@ -5,10 +5,14 @@
  */
 package system.util;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -78,7 +82,7 @@ public class DbUtil {
             return items;
             
         }finally {
-            close(myConn, myStmt, myRs);
+            close(myConn, myRs, myStmt);
         }
     }
     
@@ -103,7 +107,7 @@ public class DbUtil {
             myStmt.execute();
         
         }finally{
-            close(myConn, myStmt, null);
+            close(myConn, null, myStmt);
         }
     }
 
@@ -135,19 +139,21 @@ public class DbUtil {
             
             return activeUser;
         }finally {
-            close(myConn, myStmt, myRs);
+            close(myConn, myRs, myStmt);
         }
     }
     
-    public void close(Connection myConn, PreparedStatement myStmt, ResultSet myRs) 
+    public void close(Connection myConn, ResultSet myRs, PreparedStatement... myStmt) 
         throws Exception{
         
         if(myConn != null) {
             myConn.close();
         }
         
-        if(myStmt != null) {
-            myStmt.close();
+        for(PreparedStatement stmt : myStmt) {
+            if(stmt != null) {
+                stmt.close();
+            }
         }
         
         if(myRs != null) {
@@ -193,7 +199,7 @@ public class DbUtil {
             
             return item;
         }finally{
-            close(myConn, myStmt, myRs);
+            close(myConn, myRs, myStmt);
         }
     }
 
@@ -218,7 +224,7 @@ public class DbUtil {
             
             myStmt.execute();
         }finally{
-            close(myConn, myStmt, null);
+            close(myConn, null, myStmt);
         }
     }
 
@@ -236,7 +242,7 @@ public class DbUtil {
             
             myStmt.execute();
         }finally {
-            close(myConn, myStmt, null);
+            close(myConn, null, myStmt);
         }
     }
 
@@ -289,7 +295,7 @@ public class DbUtil {
             return itemLogs;
         
         }finally{
-            close(myConn, myStmt, myRs);
+            close(myConn, myRs, myStmt);
         }
     }
 
@@ -333,10 +339,115 @@ public class DbUtil {
             }
             
         }finally {
-            close(myConn, myStmt, myRs);
+            close(myConn, myRs, myStmt);
         }
         
         return itemArchive;
+    }
+
+    public void checkOutItems(JsonArray items) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        PreparedStatement mySecondStmt = null;
+        Statement queryStmt = null;
+        ResultSet myRs = null;
+        
+        try {
+            myConn = datasource.getConnection();
+            String insertToTransac = "insert into transaction (total_amount, total_quantity, timestamp) values(?, ?, ?)";
+            myStmt = myConn.prepareStatement(insertToTransac, Statement.RETURN_GENERATED_KEYS);
+            
+            //Get the total quantity and total amount of all the items
+            int totalQuantity = 0;
+            BigDecimal totalAmount = BigDecimal.ZERO;
+            for(JsonElement item : items) {
+                int quantity = item.getAsJsonObject().get("quantity").getAsInt();
+                BigDecimal total = item.getAsJsonObject().get("total").getAsBigDecimal();
+                
+                totalQuantity += quantity;
+                totalAmount = totalAmount.add(total);
+            }
+            
+            myStmt.setBigDecimal(1, totalAmount);
+            myStmt.setInt(2, totalQuantity);
+            myStmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+            
+            //We need to get the id of the last inserted row
+            //in the transaction table to use it on another table
+            int affectedRows = myStmt.executeUpdate();
+            int insertedId = -1;
+            
+            if (affectedRows == 0) {
+                throw new SQLException("No rows affected.");
+            }
+            
+            try (ResultSet generatedKeys = myStmt.getGeneratedKeys()) {
+                if(generatedKeys.next()) {
+                    insertedId = generatedKeys.getInt(1);
+                    System.out.println("insertedId" + insertedId);
+                }else {
+                    throw new SQLException("No id obtained!");
+                }
+            }
+            
+            System.out.println("inserted a transaction row!");
+            System.out.println("last inserted id " + insertedId);
+            
+            String insertToTransacDetails = "insert into transaction_detail (transaction_id, item_id, quantity, total_amount) values (?, ?, ?, ?)";
+            mySecondStmt = myConn.prepareStatement(insertToTransacDetails);
+            
+            //Inserting transaction's details to transaction_detail table
+            myConn.setAutoCommit(false);
+            for(JsonElement item : items) {
+                int quantity = item.getAsJsonObject().get("quantity").getAsInt();
+                BigDecimal total = item.getAsJsonObject().get("total").getAsBigDecimal();
+                int id = item.getAsJsonObject().get("id").getAsInt();
+                
+                mySecondStmt.setInt(1, insertedId);
+                mySecondStmt.setInt(2, id);
+                mySecondStmt.setInt(3, quantity);
+                mySecondStmt.setBigDecimal(4, total);
+                mySecondStmt.addBatch();
+            }
+            
+            //Commit the inserted row after the loop is finished
+            mySecondStmt.executeBatch();
+            myConn.commit();
+            myConn.setAutoCommit(true);
+            
+            //This query is for updating the stocks of the item
+            //after the checkout
+            for(JsonElement item : items) {
+                int id = item.getAsJsonObject().get("id").getAsInt();
+                int quantity = item.getAsJsonObject().get("quantity").getAsInt();
+                
+                queryStmt = myConn.createStatement();
+                queryStmt = myConn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                myRs = queryStmt.executeQuery("select * from item");
+                
+                while(myRs.next()) {
+                    int itemId = myRs.getInt("id");
+                    int stock = myRs.getInt("stock");
+                    
+                    if (itemId == id) {
+                        myRs.updateInt("stock", stock - quantity);
+                        myRs.updateRow();
+                        break;
+                    }
+                }
+                
+            }
+            
+            System.out.println("Updating the items successful!");
+        
+        }finally {
+            close(myConn, myRs, myStmt, mySecondStmt);
+            
+            //addidtional statement
+            if (queryStmt != null) {
+                queryStmt.close();
+            }
+        }
     }
     
 }
