@@ -7,8 +7,10 @@ var checkoutModal = document.querySelector("#checkout-modal");
 
 var modalQtyInput = document.querySelector('.pos-modal-setting-input');
 var cartItems = document.querySelector('#cart-item-list');
+
 var checkoutBttn = document.querySelector("#checkout-button");
 var checkoutCancelBttn = document.querySelector(".checkout-cancel");
+var checkoutConfirmBttn = document.querySelector(".checkout-confirm");
 
 var currentItemMap;
 var itemTotalAmount = 0;
@@ -60,13 +62,22 @@ setModalCancelBttn.onclick = function() {
     settingModal.style.display = 'none';
 };
 
+var checkoutItem = [];
 checkoutBttn.onclick = function() {
     console.log('cart items', cartItems.children);
     var children = cartItems.children;
     for(var i = 0; i < children.length; i++) {
-        var qty = children[i].querySelector('.item-quantity');
-        console.log('qty', qty.getAttribute('title'));
-        console.log('subtotal', children[i].dataset['itemSubtotal']);
+        var itemMap = {};
+        
+        var itemQuantity = children[i].querySelector('.item-quantity');
+        var itemTotal = children[i].dataset['itemSubtotal'];
+        var itemId = children[i].dataset['itemId'];
+        console.log('item qty', itemQuantity.getAttribute('title'));
+        itemMap['quantity'] = itemQuantity.getAttribute('title');
+        itemMap['total'] = itemTotal;
+        itemMap['id'] = itemId;
+        
+        checkoutItem.push(itemMap);
     }
     
     var checkoutTotal = checkoutModal.querySelector('.checkout-total');
@@ -77,6 +88,29 @@ checkoutBttn.onclick = function() {
 
 checkoutCancelBttn.onclick = function() {
     checkoutModal.style.display = 'none';
+}
+
+checkoutConfirmBttn.onclick = function() {
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = 'command=CHECKOUT' + '&param=' + JSON.stringify(checkoutItem);
+    xmlhttp.open('POST', url, true);
+    xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    
+    xmlhttp.onreadystatechange = function() {
+        if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            console.log('items sold!');
+            checkoutModal.style.display = 'none';
+            var cartItemList = cartItems.children;
+            while(cartItems.firstChild) {
+                cartItems.removeChild(cartItems.firstChild);
+            }
+            checkoutItem = [];
+            alert('items checked out!');
+        }
+    };
+    
+    xmlhttp.send(param);
 }
 
 cartItems.addEventListener('click', function(event) {

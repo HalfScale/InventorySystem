@@ -7,6 +7,8 @@ package system.servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -139,6 +141,8 @@ public class SystemController extends HttpServlet {
                     break;
                 case "UPDATE": updateItem(request, response);
                     break;
+                case "CHECKOUT": checkoutItems(request, response);
+                    break;
                 default:
                     listItems(request, response);
             }
@@ -230,7 +234,6 @@ public class SystemController extends HttpServlet {
         
         dbUtil.updateItem(item);
         
-        // we stopped at updating
         PrintWriter out = response.getWriter();
         out.println(item.getId());
     }
@@ -276,6 +279,20 @@ public class SystemController extends HttpServlet {
         PrintWriter out = response.getWriter();
         response.setHeader("Content-Type", "application/json");
         out.println(result);
+    }
+
+    private void checkoutItems(HttpServletRequest request, HttpServletResponse response)
+        throws Exception{
+        
+        String itemDetails = request.getParameter("param");
+        System.out.println("itemDetails " + itemDetails);
+        
+        JsonArray items = new JsonParser().parse(itemDetails).getAsJsonArray();
+        dbUtil.checkOutItems(items);
+        
+        PrintWriter out = response.getWriter();
+        response.setHeader("Content-Type", "text/plain");
+        out.println("Checkout successful!");
     }
 
 }
