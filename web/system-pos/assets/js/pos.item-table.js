@@ -40,3 +40,25 @@ xmlhttp.onreadystatechange = function() {
 
 xmlhttp.send();
 
+var searchBar = document.getElementById('item-search-bar');
+searchBar.onkeyup = function() {
+    var input, filter, table, tr, td, textValue;
+    input = searchBar;
+    filter = input.value.toLowerCase();
+    table = document.getElementById('pos-table');
+    tr = table.getElementsByTagName('tr');
+    
+    for(var i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName('td')[0]; // refers to the name column of the item table
+        
+        if (td) {
+            textValue = td.textContent || td.innerText;
+            
+            if (textValue.toLowerCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+            }else {
+                tr[i].style.display = 'none';
+            }
+        }
+    }
+}

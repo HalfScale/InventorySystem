@@ -320,10 +320,10 @@ searchBar.onkeyup = function() {
     tr = table.getElementsByTagName('tr');
     
     for (var i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName('td')[0];
+        td = tr[i].getElementsByTagName('td')[0]; // refers to the name column of the item table
         
         if (td) {
-            textValue = td.textConent || td.innerText;
+            textValue = td.textContent || td.innerText;
             console.log('textValue', textValue.toLowerCase());
             //if it doesn't match the word then display none.
             if (textValue.toLowerCase().indexOf(filter) > -1) {

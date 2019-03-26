@@ -13,7 +13,7 @@ table{
 #pos-table-div{
     width: 65%;
     float: left;
-    height: 656px;
+    height: 624px;
     overflow: auto;
 }
 
@@ -53,7 +53,7 @@ tbody tr:hover {
 }
 
 #cart-item-list{
-    height: 598px;
+    height: 567px;
     border-left: 1px solid #a7a7a7;
     border-right: 1px solid #a7a7a7;
     overflow: auto;
@@ -125,4 +125,10 @@ tbody tr:hover {
 .cart-item-box{
     background-color: #eaeaea;
     border-bottom: 1px solid #9f9d9d;
+}
+
+#item-search-bar{
+    width: 98%;
+    margin: 10px auto;
+    padding: 5px;
 }
