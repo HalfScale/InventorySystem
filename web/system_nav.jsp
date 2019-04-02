@@ -14,12 +14,19 @@
         <link type="text/css" rel="stylesheet" href="../css/general.css">
         <script src="../script/util.js"></script>
     </head>
+    
+    <c:url var="logoutURL" value="/SystemController">
+        <c:param name="command" value="LOGOUT"/>
+    </c:url>
+        
+    
     <body>
         <div id="test-element" data-itemId="">
         <div class="side-nav">
             <a href="${pageContext.request.contextPath}/system-home/home.jsp">Home</a>
             <a href="${pageContext.request.contextPath}/system-pos/pos.jsp">POS</a>
             <a href="${pageContext.request.contextPath}/system-inventory/inventory.jsp">Inventory</a>
+            <a href="${pageContext.request.contextPath}/system/system-log.jsp">System Logs</a>
             <a href="${logoutURL}">Logout</a>
         </div>
     </body>

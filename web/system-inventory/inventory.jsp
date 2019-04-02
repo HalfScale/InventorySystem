@@ -24,6 +24,8 @@
         <div class="top-nav">
             <span id="archive-item-span" class="item-span">Archive</span>
             <span id="add-item-span" class="item-span">Add Item</span>
+            <span id="categories-item-span" class="item-span">Categories</span>
+            <span id="brand-item-span" class="item-span">Brand</span>
         </div>
         
         <input id="item-search-bar" type="text" placeholder="Search for item...">
@@ -141,6 +143,38 @@
                     
                 </div>
             </div>
+            <div class="form-modal-container history-item-modal">
+                <div class="item-history-div">
+                    
+                    <div class="form-header">
+                        <span class="close history-modal-close"> &times;</span>
+                    </div>
+                    
+                    <div class="scrollable-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th colspan="8">ITEM HISTORY</th>
+                                </tr>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Code</th>
+                                    <th>Description</th>
+                                    <th>Price</th>
+                                    <th>Reseller Price</th>
+                                    <th>Stock</th>
+                                    <th>Action</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="item-history-tbody">
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+            </div>
             
             <div class="form-modal-container archive-item-modal">
                 <div class="item-archive-div">
@@ -167,6 +201,32 @@
                             </thead>
 
                             <tbody class="item-archive-tbody">
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="form-modal-container brand-item-modal">
+                <div class="brand-archive-div">
+                    
+                    <div class="form-header">
+                        <span class="close brand-modal-close"> &times;</span>
+                    </div>
+                    
+<!--                    <input class="brand-item-input" type="text" placeholder="Type the brand here...">
+                    <input id="brand-item-add" type="button" value="Add Brand">-->
+                    
+                    <div class="scrollable-table">
+                        <table id="brand-table">
+                            <thead>
+                                <tr>
+                                    <th>Brand</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="item-brand-tbody">
                             </tbody>
                         </table>
                     </div>

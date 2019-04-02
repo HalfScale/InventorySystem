@@ -2,17 +2,22 @@ var addModal = document.querySelector('.add-item-modal');
 var updateModal = document.querySelector('.update-item-modal');
 var historyModal = document.querySelector('.history-item-modal');
 var archiveModal = document.querySelector('.archive-item-modal');
+var brandModal = document.querySelector('.brand-item-modal');
 
-var addItemBttn = document.getElementById("add-item-span");
-var archiveItemBttn = document.getElementById("archive-item-span");
+var brandTableBody = document.querySelector('.item-brand-tbody');
+
+var addItemBttn = document.getElementById('add-item-span');
+var archiveItemBttn = document.getElementById('archive-item-span');
+var brandItemBttn = document.getElementById('brand-item-span');
 
 var addCloseBttn = document.querySelector('.add-modal-close');
 var updateCloseBttn = document.querySelector('.update-modal-close');
 var historyCloseBttn = document.querySelector('.history-modal-close');
 var archiveCloseBttn = document.querySelector('.archive-modal-close');
+var brandCloseBttn = document.querySelector('.brand-modal-close');
 
-var addItemForm = document.getElementById("add-item-form");
-var updateItemForm = document.getElementById("update-item-form");
+var addItemForm = document.getElementById('add-item-form');
+var updateItemForm = document.getElementById('update-item-form');
 
 addItemBttn.onclick = function() {
     console.log('click!');
@@ -34,6 +39,11 @@ historyCloseBttn.onclick = function() {
 archiveCloseBttn.onclick = function() {
     archiveModal.style.display = 'none';
 };
+
+brandCloseBttn.onclick = function() {
+    brandModal.style.display = 'none';
+    removeElemChild(brandTableBody);
+}
 
 addItemForm.onsubmit = function(event) {
     event.preventDefault();
@@ -174,14 +184,14 @@ updateItemForm.onsubmit = function(event) {
         name: name.value,
         code: code.value,
         description: description.value,
-        price: price.value,
-        resellerPrice: resellerPrice.value,
+        price: toTwoDecimal(price.value),
+        resellerPrice: toTwoDecimal(resellerPrice.value),
         stock: stock.value
     };
     
     //the arrangement of this array is the same
     // with the arrangement of the table columns
-    var dataArray = [data.name, data.code, data.description, data.price, data.stock];
+    var dataArray = [data.name, data.code, data.description, data.price, data.resellerPrice, data.stock];
     
     var xmlhttp = new XMLHttpRequest();
     var url = '/InventorySystem/SystemController';
@@ -384,6 +394,67 @@ archiveItemBttn.onclick = function() {
 };
 
 //</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="code for item brands">
+var addItemBrandBttn = document.getElementById('brand-item-add');
+var brandInput = document.querySelector('.brand-item-input');
+
+brandItemBttn.onclick = function() {
+    brandModal.style.display = 'block';
+    
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = '?command=LIST_BRAND';
+    xmlhttp.open('GET', url + param, true);
+    
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            console.log('result', this.responseText);
+            
+            var brands = JSON.parse(this.responseText);
+            
+            brands.forEach(function(brand) {
+                var row = document.createElement('tr');
+                var cell = document.createElement('td');
+                cell.innerHTML = brand.name;
+                
+                row.appendChild(cell);
+                
+                brandTableBody.appendChild(row);
+            });
+        }
+    }
+    
+    xmlhttp.send();
+}
+
+addItemBrandBttn.onclick = function() {
+    console.log('input value', brandInput.value);
+    
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = 'command=ADD_BRAND&param=' + brandInput.value;
+    xmlhttp.open('POST', url, true);
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    
+    xmlhttp.onreadystatechange = function() {
+        if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            console.log('result', this.responseText);
+            var brandName = this.responseText;
+            var row = document.createElement('tr');
+            
+            var cell = document.createElement('td');
+            cell.innerHTML = brandName;
+            
+            row.appendChild(cell);
+            brandTableBody.appendChild(row);
+        }
+    }
+    
+    xmlhttp.send(param);
+}
+//</editor-fold>
+
 
 /*
  * used for modals

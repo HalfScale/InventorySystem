@@ -26,6 +26,10 @@ public class Util {
         return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
     }
     
+    public static Timestamp toTimestamp(LocalDateTime localDateTime) {
+        return Timestamp.valueOf(localDateTime);
+    }
+    
     public static String dateFormat(Date date, ZoneOffset zone, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         

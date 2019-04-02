@@ -160,3 +160,12 @@ div.scrollable-table{
     height: 500px;
     overflow: auto;
 }
+
+#brand-table{
+    width: 100%;
+}
+
+.brand-archive-div{
+    width: 25%;
+    margin: 10px auto;
+}

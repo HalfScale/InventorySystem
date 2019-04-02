@@ -19,9 +19,11 @@
         <filter-class>system.filters.UserSessionFilter</filter-class>
     </filter>
     
-<!--    <filter-mapping>
+    <filter-mapping>
         <filter-name>UserSessionFilter</filter-name>
-        <url-pattern>/home.jsp</url-pattern>
-        <url-pattern>/item-list.jsp</url-pattern>
-    </filter-mapping>-->
+        <url-pattern>/system/system-log.jsp</url-pattern>
+        <url-pattern>/system-home/home.jsp</url-pattern>
+        <url-pattern>/system-inventory/inventory.jsp</url-pattern>
+        <url-pattern>/system-pos/pos.jsp</url-pattern>
+    </filter-mapping>
 </web-app>
