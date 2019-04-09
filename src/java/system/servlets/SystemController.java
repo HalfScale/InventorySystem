@@ -28,6 +28,7 @@ import javax.sql.DataSource;
 import system.util.GsonUTCDateAdapter;
 import system.util.DbUtil;
 import system.valueobject.Brand;
+import system.valueobject.Category;
 import system.valueobject.Item;
 import system.valueobject.ItemArchive;
 import system.valueobject.ItemLog;
@@ -118,6 +119,8 @@ public class SystemController extends HttpServlet {
                     break;
                 case "LIST_BRAND": listBrands(request, response);
                     break;
+                case "LIST_CATEGORY": listCategories(request, response);
+                    break;
                 case "LOGOUT": logout(request, response);
                     break;
                 default:
@@ -158,6 +161,8 @@ public class SystemController extends HttpServlet {
                     break;
                 case "ADD_BRAND": addBrand(request, response);
                     break;
+                case "ADD_CATEGORY": addCategory(request, response);
+                    break;
                 default:
                     listItems(request, response);
             }
@@ -185,9 +190,6 @@ public class SystemController extends HttpServlet {
               List<Item> items = dbUtil.getAllItems();
               String result = gson.toJson(items);
               
-              for(Item item : items) {
-                  System.out.println("item name->" + item.getName() + "\t" + item.getPrice());
-              }
               
               // then send the response back to javascript
               PrintWriter out = response.getWriter();
@@ -203,17 +205,17 @@ public class SystemController extends HttpServlet {
     private void logout(HttpServletRequest request, HttpServletResponse response) 
         throws Exception{
         
-        User user = (User) request.getSession().getAttribute("active_user");
+        User user = (User) request.getSession(false).getAttribute("active_user");
         if(user == null) {
+            response.sendRedirect(request.getContextPath() + "/");
             System.out.println("Session is null");
+        }else {
+            System.out.println("User: " + user.getName() + " has logged out!");
+            registerSystemLog(request, response, LogType.LOGOUT);
+            request.getSession(false).invalidate();
+            response.sendRedirect(request.getContextPath() + "/");
         }
-//        System.out.println("User name: " + user.getName());
-//        System.out.println("is user null? " + user == null + " " + user.getId());
-//        System.out.println("User " + user.getName() + " logged out.");
         
-        registerSystemLog(request, response, LogType.LOGOUT);
-        request.getSession().removeAttribute("active_user");
-        response.sendRedirect(request.getContextPath() + "/");
         
     }
 
@@ -382,5 +384,27 @@ public class SystemController extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         out.println(result);
+    }
+
+    private void listCategories(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
+        Gson gson = new Gson();
+        List<Category> categories = dbUtil.listCategory();
+        String result = gson.toJson(categories);
+        PrintWriter out = response.getWriter();
+        
+        out.println(result);
+    }
+
+    private void addCategory(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
+        String param = request.getParameter("param");
+        
+        String message = dbUtil.addCategory(param);
+        PrintWriter out = response.getWriter();
+        response.setHeader("Content-Type", "text/plain");
+        out.println(message);
     }
 }

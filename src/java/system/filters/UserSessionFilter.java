@@ -34,16 +34,15 @@ public class UserSessionFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain fc)
             throws IOException, ServletException {
-        
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         
         HttpSession session = httpRequest.getSession(false);
-        
+//        System.out.println("is user logged in?: " + session == null);
         if (session != null) {
             fc.doFilter(request, response);
         }else {
-            httpResponse.sendRedirect(contextPath + "/index.html");
+            httpResponse.sendRedirect(contextPath + "/");
             System.out.println("No user is existing in this session");
         }
     

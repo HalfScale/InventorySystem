@@ -17,9 +17,12 @@ public class Item {
     private String name = "";
     private String code = "";
     private String description = "";
+    private String brand = "";
+    private String category = "";
     private BigDecimal price = BigDecimal.ZERO;
     private BigDecimal resellerPrice = BigDecimal.ZERO;
     private int stock = 0;
+    
 
     public int getId() {
         return id;
@@ -75,6 +78,22 @@ public class Item {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
     
     

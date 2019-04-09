@@ -101,7 +101,7 @@ public class SystemLogin extends HttpServlet {
             User activeUser = dbUtil.getUser(user, pass);
             
             if(activeUser != null) {
-                HttpSession session = request.getSession(true);
+                HttpSession session = request.getSession();
                 session.setAttribute("active_user", activeUser);
                 System.out.println("User " + activeUser.getName() + " logged in.");
                 
@@ -132,7 +132,7 @@ public class SystemLogin extends HttpServlet {
         HttpSession session = request.getSession(false);
         
         if(session != null) {
-            User user = (User) request.getSession().getAttribute("active_user");
+            User user = (User) request.getSession(false).getAttribute("active_user");
             dbUtil.registerLog(type, user);
             System.out.println("User: " + user.getName());
         }else {

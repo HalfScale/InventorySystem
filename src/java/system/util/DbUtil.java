@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.TimeZone;
 import javax.sql.DataSource;
 import system.valueobject.Brand;
+import system.valueobject.Category;
 import system.valueobject.Item;
 import system.valueobject.ItemArchive;
 import system.valueobject.ItemLog;
@@ -69,16 +70,18 @@ public class DbUtil {
                 String name = myRs.getString("name");
                 String code = myRs.getString("code");
                 String description = myRs.getString("description");
+                String brand = myRs.getString("brand");
+                String category = myRs.getString("category");
                 BigDecimal price = myRs.getBigDecimal("price");
                 BigDecimal resellerPrice = myRs.getBigDecimal("reseller_price");
                 int stock = myRs.getInt("stock");
-                
-                System.out.println("item name:" + name);
                 
                 item.setId(id);
                 item.setName(name);
                 item.setCode(code);
                 item.setDescription(description);
+                item.setBrand(brand);
+                item.setCategory(category);
                 item.setPrice(price);
                 item.setResellerPrice(resellerPrice);
                 item.setStock(stock);
@@ -101,15 +104,17 @@ public class DbUtil {
         try {
             
             myConn = datasource.getConnection();
-            String query = "insert into item(name, code, description, price, reseller_price, stock) values(?, ?, ?, ?, ?, ?)";
+            String query = "insert into item(name, code, description, brand, category, price, reseller_price, stock) values(?, ?, ?, ?, ?, ?, ?, ?)";
             
             myStmt = myConn.prepareStatement(query);
             myStmt.setString(1, item.getName());
             myStmt.setString(2, item.getCode());
             myStmt.setString(3, item.getDescription());
-            myStmt.setBigDecimal(4, item.getPrice());
-            myStmt.setBigDecimal(5, item.getResellerPrice());
-            myStmt.setInt(6, item.getStock());
+            myStmt.setString(4, item.getBrand());
+            myStmt.setString(5, item.getCategory());
+            myStmt.setBigDecimal(6, item.getPrice());
+            myStmt.setBigDecimal(7, item.getResellerPrice());
+            myStmt.setInt(8, item.getStock());
             
             myStmt.execute();
         
@@ -622,6 +627,60 @@ public class DbUtil {
         }
         
         return brands;
+    }
+
+    public List<Category> listCategory() throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        List<Category> categories = new ArrayList<>();
+        
+        try {
+            myConn = datasource.getConnection();
+            String query = "select * from category";
+            myStmt = myConn.prepareStatement(query);
+            
+            myRs = myStmt.executeQuery();
+            
+            while(myRs.next()) {
+                int id = myRs.getInt("id");
+                String name = myRs.getString("name");
+                
+                Category category = new Category();
+                category.setId(id);
+                category.setName(name);
+                
+                categories.add(category);
+            }
+            
+        }finally {
+            close(myConn, myRs, myStmt);
+        }
+        
+        return categories;
+    }
+
+    public String addCategory(String param) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        String message = "Category insertion unsuccessful";
+        
+        try {
+            myConn = datasource.getConnection();
+            String insert = "insert into category (name) values (?)";
+            myStmt = myConn.prepareStatement(insert);
+            myStmt.setString(1, param);
+            int result = myStmt.executeUpdate();
+            
+            if(result == 1) {
+                message = param;
+            }
+                    
+        }finally {
+            close(myConn, null, myStmt);
+        }
+        
+        return message;
     }
     
 }

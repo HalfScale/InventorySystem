@@ -18,26 +18,33 @@ import java.util.TimeZone;
  */
 public class Util {
     
+    public boolean checkSession () {
+    
+    }
+    
+    //<editor-fold defaultstate="collapsed" desc="Utilities for dates">
     public static LocalDateTime toLocalDateTime(Timestamp timestamp) {
         return LocalDateTime.ofInstant(timestamp.toInstant(), ZoneOffset.UTC);
     }
-    
+
     public static Date toDate(LocalDateTime localDateTime) {
         return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
     }
-    
+
     public static Timestamp toTimestamp(LocalDateTime localDateTime) {
         return Timestamp.valueOf(localDateTime);
     }
-    
+
     public static String dateFormat(Date date, ZoneOffset zone, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
-        
+
         if (zone != null) {
             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         }
-        
+
         return sdf.format(date);
-        
+
     }
+    //</editor-fold>
+    
 }

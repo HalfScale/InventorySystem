@@ -21,6 +21,7 @@
     
     <filter-mapping>
         <filter-name>UserSessionFilter</filter-name>
+        <servlet-name>SystemController</servlet-name>
         <url-pattern>/system/system-log.jsp</url-pattern>
         <url-pattern>/system-home/home.jsp</url-pattern>
         <url-pattern>/system-inventory/inventory.jsp</url-pattern>

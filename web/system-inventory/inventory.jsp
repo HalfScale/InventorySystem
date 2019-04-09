@@ -37,6 +37,8 @@
                             <th><span>Name</span></th>
                             <th><span>Code</span></th>
                             <th><span>Description</span></th>
+                            <th><span>Brand</span></th>
+                            <th><span>Category</span></th>
                             <th><span>Price</span></th>
                             <th><span>Reseller Price</span></th>
                             <th><span>Stock</span></th>
@@ -67,6 +69,10 @@
                         <input id="add-code" type="text" name="code"/>
                         <label>Description:</label>
                         <input id="add-description" type="text" name="description" required/>
+                        <label>Brand:</label>
+                        <select id="add-brand" class="select-generic" name="brand"></select>
+                        <label>Category:</label>
+                        <select id="add-category" class="select-generic" name="description"></select>
                         <label>Price:</label>
                         <input id="add-price" type="text" name="price" required=""/>
                         <label>Reseller Price:</label>
@@ -209,15 +215,15 @@
             </div>
             
             <div class="form-modal-container brand-item-modal">
-                <div class="brand-archive-div">
+                <div class="item-brand-div">
                     
                     <div class="form-header">
                         <span class="close brand-modal-close"> &times;</span>
                     </div>
                     
-<!--                    <input class="brand-item-input" type="text" placeholder="Type the brand here...">
-                    <input id="brand-item-add" type="button" value="Add Brand">-->
-                    
+                    <input class="brand-item-input" type="text" placeholder="Type the brand here...">
+                    <input id="brand-item-add" type="button" value="Add Brand">
+            
                     <div class="scrollable-table">
                         <table id="brand-table">
                             <thead>
@@ -231,6 +237,32 @@
                         </table>
                     </div>
                     
+                </div>
+            </div>
+            
+            <div class="form-modal-container category-item-modal">
+                <div class="item-category-div">
+
+                    <div class="form-header">
+                        <span class="close category-modal-close"> &times;</span>
+                    </div>
+                    
+                    <input class="category-item-input" type="text" placeholder="Type the brand here...">
+                    <input id="category-item-add" type="button" value="Add Category">
+
+                    <div class="scrollable-table">
+                        <table id="category-table">
+                            <thead>
+                                <tr>
+                                    <th colspan="1">Category</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="item-category-tbody">
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
             </div>
         </div>
