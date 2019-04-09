@@ -1,0 +1,50 @@
+body {
+    margin: 0;
+}
+
+main {
+    margin-left: 160px;
+}
+
+table{
+    width: 100%;
+}
+
+#pos-table-div{
+    width: 65%;
+    float: left;
+    height: 624px;
+    overflow: auto;
+}
+
+table, th, td {
+    border-collapse: collapse;
+    border: 1px solid #a7a7a7;
+}
+
+th {
+    background-color: #1c1b1b;
+    color: #ffffff;
+    padding: 5px;
+}
+
+td {
+    padding: 10px;
+}
+
+tbody tr:hover {
+    background-color: #be2213;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.log-type-selection{
+    margin: 5px 0px;
+    padding: 5px;
+    font-size: 16px;
+}
+
+.log-div{
+    margin: 0 auto;
+    width: 80%;
+}

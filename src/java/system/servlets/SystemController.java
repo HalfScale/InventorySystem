@@ -23,12 +23,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import system.util.GsonUTCDateAdapter;
 import system.util.DbUtil;
+import system.valueobject.Brand;
+import system.valueobject.Category;
 import system.valueobject.Item;
 import system.valueobject.ItemArchive;
 import system.valueobject.ItemLog;
+import system.valueobject.LogType;
+import system.valueobject.SystemLog;
 import system.valueobject.User;
 
 /**
@@ -90,6 +95,7 @@ public class SystemController extends HttpServlet {
         String command = request.getParameter("command");
         
         command = command != null ? command : "LIST";
+        System.out.println("Param doGet " + command);
         
         try {
             switch (command) {
@@ -106,6 +112,14 @@ public class SystemController extends HttpServlet {
                 case "HISTORY": viewItemHistory(request, response);
                     break;
                 case "ARCHIVE": viewItemArchive(request, response);
+                    break;
+                case "LOG_TYPE": listLogTypes(request, response);
+                    break;
+                case "LOGS": listAllLogs(request, response);
+                    break;
+                case "LIST_BRAND": listBrands(request, response);
+                    break;
+                case "LIST_CATEGORY": listCategories(request, response);
                     break;
                 case "LOGOUT": logout(request, response);
                     break;
@@ -131,8 +145,10 @@ public class SystemController extends HttpServlet {
         
         String command = request.getParameter("command");
         //assign 'LIST' command if null
+        System.out.println("command isNull?" + command == null);
+        System.out.println("command isNull?" + command);
         command = command != null ? command : "LIST";
-        
+        System.out.println("Param doPost " + command);
         try {
             switch (command) {
                 case "LIST": listItems(request, response);
@@ -142,6 +158,10 @@ public class SystemController extends HttpServlet {
                 case "UPDATE": updateItem(request, response);
                     break;
                 case "CHECKOUT": checkoutItems(request, response);
+                    break;
+                case "ADD_BRAND": addBrand(request, response);
+                    break;
+                case "ADD_CATEGORY": addCategory(request, response);
                     break;
                 default:
                     listItems(request, response);
@@ -170,9 +190,6 @@ public class SystemController extends HttpServlet {
               List<Item> items = dbUtil.getAllItems();
               String result = gson.toJson(items);
               
-              for(Item item : items) {
-                  System.out.println("item name->" + item.getName() + "\t" + item.getPrice());
-              }
               
               // then send the response back to javascript
               PrintWriter out = response.getWriter();
@@ -188,12 +205,17 @@ public class SystemController extends HttpServlet {
     private void logout(HttpServletRequest request, HttpServletResponse response) 
         throws Exception{
         
-        User user = (User) request.getSession().getAttribute("active_user");
-        System.out.println("User " + user.getName() + " logged out.");
-        request.getSession().removeAttribute("active_user");
+        User user = (User) request.getSession(false).getAttribute("active_user");
+        if(user == null) {
+            response.sendRedirect(request.getContextPath() + "/");
+            System.out.println("Session is null");
+        }else {
+            System.out.println("User: " + user.getName() + " has logged out!");
+            registerSystemLog(request, response, LogType.LOGOUT);
+            request.getSession(false).invalidate();
+            response.sendRedirect(request.getContextPath() + "/");
+        }
         
-        
-        response.sendRedirect(request.getContextPath() + "/");
         
     }
 
@@ -206,6 +228,7 @@ public class SystemController extends HttpServlet {
         Item item = gson.fromJson(itemParam, Item.class);
         
         dbUtil.addItem(item);
+        registerSystemLog(request, response, LogType.ADD_ITEM);
     }
 
     private void loadItem(HttpServletRequest request, HttpServletResponse response) 
@@ -236,6 +259,7 @@ public class SystemController extends HttpServlet {
         
         PrintWriter out = response.getWriter();
         out.println(item.getId());
+        registerSystemLog(request, response, LogType.UPDATE_ITEM);
     }
 
     private void deleteItem(HttpServletRequest request, HttpServletResponse response) 
@@ -247,7 +271,7 @@ public class SystemController extends HttpServlet {
         
         PrintWriter out = response.getWriter();
         out.println(itemId);
-//        response.sendRedirect(request.getContextPath() + "/SystemController");
+        registerSystemLog(request, response, LogType.DELETE_ITEM);
     }
 
     private void viewItemHistory(HttpServletRequest request, HttpServletResponse response) 
@@ -293,6 +317,94 @@ public class SystemController extends HttpServlet {
         PrintWriter out = response.getWriter();
         response.setHeader("Content-Type", "text/plain");
         out.println("Checkout successful!");
+        registerSystemLog(request, response, LogType.CHECKOUT_ITEM);
     }
 
+    private void listLogTypes(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception {
+        
+        Gson gson = new Gson();
+        List<LogType> logTypes = dbUtil.getAllLogTypes();
+        
+        String result = gson.toJson(logTypes);
+        
+        PrintWriter out = response.getWriter();
+        response.setHeader("Content-Type", "application/json");
+        out.println(result);
+    }
+
+    private void listAllLogs(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
+        Gson gson = new GsonBuilder().
+                registerTypeAdapter(Date.class, new GsonUTCDateAdapter())
+                .create();
+        
+        List<Map> systemLogs = dbUtil.getAllLogs();
+        
+        String result = gson.toJson(systemLogs);
+        PrintWriter out = response.getWriter();
+        response.setHeader("Content-Type", "application/json");
+        out.println(result);
+        
+    }
+
+    private void registerSystemLog(HttpServletRequest request, HttpServletResponse response, int type) 
+        throws Exception {
+        HttpSession session = request.getSession(false);
+        
+        if(session != null) {
+            User user = (User) session.getAttribute("active_user");
+            dbUtil.registerLog(type, user);
+            System.out.println("User: " + user.getName());
+        }else {
+            response.sendRedirect(request.getContextPath() + "/index.html");
+        }
+    }
+
+    private void addBrand(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
+        String param = request.getParameter("param");
+        System.out.println("addBrand method");
+        String message = dbUtil.addBrand(param);
+        
+        PrintWriter out = response.getWriter();
+        response.setHeader("Content-Type", "text/plain");
+        out.println(message);
+    }
+
+    private void listBrands(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception {
+        
+        Gson gson = new Gson();
+        
+        List<Brand> brands = dbUtil.listBrand();
+        String result = gson.toJson(brands);
+        PrintWriter out = response.getWriter();
+        
+        out.println(result);
+    }
+
+    private void listCategories(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
+        Gson gson = new Gson();
+        List<Category> categories = dbUtil.listCategory();
+        String result = gson.toJson(categories);
+        PrintWriter out = response.getWriter();
+        
+        out.println(result);
+    }
+
+    private void addCategory(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
+        String param = request.getParameter("param");
+        
+        String message = dbUtil.addCategory(param);
+        PrintWriter out = response.getWriter();
+        response.setHeader("Content-Type", "text/plain");
+        out.println(message);
+    }
 }

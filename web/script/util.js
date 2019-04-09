@@ -27,3 +27,7 @@ function toTwoDecimal(num) {
 function filterInput(input, regex) {
     return regex.test(input);
 }
+
+function capitalize(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}

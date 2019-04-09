@@ -14,8 +14,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import system.util.DbUtil;
+import system.valueobject.LogType;
 import system.valueobject.User;
 
 /**
@@ -99,11 +101,14 @@ public class SystemLogin extends HttpServlet {
             User activeUser = dbUtil.getUser(user, pass);
             
             if(activeUser != null) {
-                request.getSession().setAttribute("active_user", activeUser);
+                HttpSession session = request.getSession();
+                session.setAttribute("active_user", activeUser);
                 System.out.println("User " + activeUser.getName() + " logged in.");
+                
+                registerSystemLog(request, response, LogType.LOGIN);
                 response.sendRedirect(request.getContextPath() + "/system-home/home.jsp");
             }else {
-                System.out.println("User not existing");
+                System.out.println("Incorrect user and password");
                 response.sendRedirect(request.getContextPath() + "/");
             }
             //then check if its a valid user
@@ -121,5 +126,18 @@ public class SystemLogin extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+    
+    private void registerSystemLog(HttpServletRequest request, HttpServletResponse response, int type) 
+        throws Exception {
+        HttpSession session = request.getSession(false);
+        
+        if(session != null) {
+            User user = (User) request.getSession(false).getAttribute("active_user");
+            dbUtil.registerLog(type, user);
+            System.out.println("User: " + user.getName());
+        }else {
+            response.sendRedirect(request.getContextPath() + "/index.html");
+        }
+    }
 
 }

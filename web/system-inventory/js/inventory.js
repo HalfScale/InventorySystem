@@ -2,17 +2,26 @@ var addModal = document.querySelector('.add-item-modal');
 var updateModal = document.querySelector('.update-item-modal');
 var historyModal = document.querySelector('.history-item-modal');
 var archiveModal = document.querySelector('.archive-item-modal');
+var brandModal = document.querySelector('.brand-item-modal');
+var categoryModal = document.querySelector('.category-item-modal');
 
-var addItemBttn = document.getElementById("add-item-span");
-var archiveItemBttn = document.getElementById("archive-item-span");
+var brandTableBody = document.querySelector('.item-brand-tbody');
+var categoryTableBody = document.querySelector('.item-category-tbody');
+
+var addItemBttn = document.getElementById('add-item-span');
+var archiveItemBttn = document.getElementById('archive-item-span');
+var brandItemBttn = document.getElementById('brand-item-span');
+var categoryItemBttn = document.getElementById('categories-item-span');
 
 var addCloseBttn = document.querySelector('.add-modal-close');
 var updateCloseBttn = document.querySelector('.update-modal-close');
 var historyCloseBttn = document.querySelector('.history-modal-close');
 var archiveCloseBttn = document.querySelector('.archive-modal-close');
+var brandCloseBttn = document.querySelector('.brand-modal-close');
+var categoryCloseBttn = document.querySelector('.category-modal-close');
 
-var addItemForm = document.getElementById("add-item-form");
-var updateItemForm = document.getElementById("update-item-form");
+var addItemForm = document.getElementById('add-item-form');
+var updateItemForm = document.getElementById('update-item-form');
 
 addItemBttn.onclick = function() {
     console.log('click!');
@@ -35,12 +44,24 @@ archiveCloseBttn.onclick = function() {
     archiveModal.style.display = 'none';
 };
 
+categoryCloseBttn.onclick = function() {
+    categoryModal.style.display = 'none';
+    removeElemChild(categoryTableBody);
+}
+
+brandCloseBttn.onclick = function() {
+    brandModal.style.display = 'none';
+    removeElemChild(brandTableBody);
+}
+
 addItemForm.onsubmit = function(event) {
     event.preventDefault();
     
     var name = document.getElementById("add-name");
     var code = document.getElementById("add-code");
     var description = document.getElementById("add-description");
+    var brand = document.getElementById("add-brand");
+    var category = document.getElementById("add-category");
     var price = document.getElementById("add-price");
     var resellerPrice = document.getElementById("add-reseller-price");
     var stock = document.getElementById("add-stock");
@@ -49,6 +70,8 @@ addItemForm.onsubmit = function(event) {
         name: name.value,
         code: code.value,
         description: description.value,
+        brand: brand.value,
+        category: category.value,
         price: price.value,
         resellerPrice: resellerPrice.value,
         stock: stock.value
@@ -68,6 +91,69 @@ addItemForm.onsubmit = function(event) {
     
     xmlhttp.send(param);
 };
+
+//<editor-fold defaultstate="collapsed" desc="code for loading category & brands for add-item">
+var addBrandSelect = document.getElementById('add-brand');
+var addCategorySelect = document.getElementById('add-category');
+
+var xmlhttp = new XMLHttpRequest();
+var url = '/InventorySystem/SystemController';
+var param = '?command=LIST_BRAND';
+
+xmlhttp.open('GET', url + param, true);
+xmlhttp.onreadystatechange = function() {
+    if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+        var result = JSON.parse(this.responseText);
+//        console.log('brand result', result);
+        var optionPlaceHolder = document.createElement('option');
+        optionPlaceHolder.innerHTML = 'Select a log type';
+        optionPlaceHolder.disabled = true;
+        optionPlaceHolder.style.display = 'none';
+        optionPlaceHolder.selected = true;
+        addBrandSelect.appendChild(optionPlaceHolder);
+
+        result.forEach(function(brand) {
+            var option = document.createElement('option');
+            option.innerHTML = capitalize(brand.name).replace('-', ' ');
+            option.value = brand.id;
+
+            addBrandSelect.appendChild(option);
+        });
+
+    }
+}
+xmlhttp.send();
+
+var xmlhttp = new XMLHttpRequest();
+var url = '/InventorySystem/SystemController';
+var param = '?command=LIST_CATEGORY';
+
+xmlhttp.open('GET', url + param, true);
+xmlhttp.onreadystatechange = function() {
+    if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+        var result = JSON.parse(this.responseText);
+//        console.log('brand result', result);
+        var optionPlaceHolder = document.createElement('option');
+        optionPlaceHolder.innerHTML = 'Select a log type';
+        optionPlaceHolder.disabled = true;
+        optionPlaceHolder.style.display = 'none';
+        optionPlaceHolder.selected = true;
+        addCategorySelect.appendChild(optionPlaceHolder);
+
+        result.forEach(function(category) {
+            var option = document.createElement('option');
+            option.innerHTML = capitalize(category.name).replace('-', ' ');
+            option.value = category.id;
+
+            addCategorySelect.appendChild(option);
+        });
+
+    }
+}
+xmlhttp.send();
+
+//</editor-fold>
+
 
 //<editor-fold defaultstate="expanded" desc="code for displaying item">
 var xmlhttp = new XMLHttpRequest();
@@ -174,14 +260,14 @@ updateItemForm.onsubmit = function(event) {
         name: name.value,
         code: code.value,
         description: description.value,
-        price: price.value,
-        resellerPrice: resellerPrice.value,
+        price: toTwoDecimal(price.value),
+        resellerPrice: toTwoDecimal(resellerPrice.value),
         stock: stock.value
     };
     
     //the arrangement of this array is the same
     // with the arrangement of the table columns
-    var dataArray = [data.name, data.code, data.description, data.price, data.stock];
+    var dataArray = [data.name, data.code, data.description, data.price, data.resellerPrice, data.stock];
     
     var xmlhttp = new XMLHttpRequest();
     var url = '/InventorySystem/SystemController';
@@ -320,10 +406,10 @@ searchBar.onkeyup = function() {
     tr = table.getElementsByTagName('tr');
     
     for (var i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName('td')[0];
+        td = tr[i].getElementsByTagName('td')[0]; // refers to the name column of the item table
         
         if (td) {
-            textValue = td.textConent || td.innerText;
+            textValue = td.textContent || td.innerText;
             console.log('textValue', textValue.toLowerCase());
             //if it doesn't match the word then display none.
             if (textValue.toLowerCase().indexOf(filter) > -1) {
@@ -384,6 +470,129 @@ archiveItemBttn.onclick = function() {
 };
 
 //</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="code for item brands">
+var addItemBrandBttn = document.getElementById('brand-item-add');
+var brandInput = document.querySelector('.brand-item-input');
+console.log('');
+brandItemBttn.onclick = function() {
+    brandModal.style.display = 'block';
+    
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = '?command=LIST_BRAND';
+    xmlhttp.open('GET', url + param, true);
+    
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            console.log('result', this.responseText);
+            
+            var brands = JSON.parse(this.responseText);
+            
+            brands.forEach(function(brand) {
+                var row = document.createElement('tr');
+                var cell = document.createElement('td');
+                cell.innerHTML = brand.name;
+                
+                row.appendChild(cell);
+                
+                brandTableBody.appendChild(row);
+            });
+        }
+    }
+    
+    xmlhttp.send();
+}
+
+addItemBrandBttn.onclick = function() {
+    console.log('input value', brandInput.value);
+    
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = 'command=ADD_BRAND&param=' + brandInput.value;
+    xmlhttp.open('POST', url, true);
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    
+    xmlhttp.onreadystatechange = function() {
+        if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            console.log('result', this.responseText);
+            var brandName = this.responseText;
+            var row = document.createElement('tr');
+            
+            var cell = document.createElement('td');
+            cell.innerHTML = brandName;
+            
+            row.appendChild(cell);
+            brandTableBody.appendChild(row);
+            brandInput.value = '';
+            brandInput.focus();
+        }
+    }
+    
+    xmlhttp.send(param);
+}
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="code for item category">
+var addItemCategoryBttn = document.getElementById('category-item-add');
+var categoryInput = document.querySelector('.category-item-input');
+
+categoryItemBttn.onclick = function() {
+    categoryModal.style.display = 'block';
+    
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = '?command=LIST_CATEGORY'
+    xmlhttp.open('GET', url + param, true);
+    xmlhttp.onreadystatechange = function() {
+        if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            console.log('result', this.responseText);
+            var categories = JSON.parse(this.responseText);
+            
+            categories.forEach(function(category) {
+                var row = document.createElement('tr');
+                var cell = document.createElement('td');
+                cell.innerHTML = category.name;
+                
+                row.appendChild(cell);
+                categoryTableBody.appendChild(row);
+            });
+        }
+    }
+    
+    xmlhttp.send();
+}
+
+addItemCategoryBttn.onclick = function() {
+    console.log('input value', categoryInput.value);
+    
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = 'command=ADD_CATEGORY&' + 'param=' + categoryInput.value;
+    xmlhttp.open('POST', url, true);
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    
+    xmlhttp.onreadystatechange = function() {
+        if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            console.log('result', this.responseText);
+            var categoryName = this.responseText;
+            
+            var row = document.createElement('tr');
+            var cell = document.createElement('td');
+            cell.innerHTML = categoryName;
+            
+            row.appendChild(cell);
+            categoryTableBody.appendChild(row);
+            categoryInput.value = '';
+            categoryInput.focus();
+        }
+    }
+    
+    xmlhttp.send(param);
+    
+}
+//</editor-fold>
+
 
 /*
  * used for modals

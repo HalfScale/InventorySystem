@@ -18,7 +18,8 @@
         <div id="view-content">
             <!--table here-->
             <div id="pos-table-div">
-                <table>
+            <input id="item-search-bar" type="text" placeholder="Search for item...">
+                <table id="pos-table">
                     <thead>
                         <th><span>Name</span></th>
                         <th><span>Code</span></th>
