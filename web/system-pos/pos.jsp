@@ -23,6 +23,8 @@
                     <thead>
                         <th><span>Name</span></th>
                         <th><span>Code</span></th>
+                        <th><span>Brand</span></th>
+                        <th><span>Category</span></th>
                         <th><span>Description</span></th>
                         <th><span>Price</span></th>
                         <th><span>Reseller Price</span></th>

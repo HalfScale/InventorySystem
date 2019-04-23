@@ -58,7 +58,9 @@ public class DbUtil {
         try {
             items = new ArrayList<>();
             myConn = datasource.getConnection();
-            String query = "select * from item";
+            String query = "select i.id, i.name, i.code, i.description, i.price, i.reseller_price,  "
+                    + "i.stock, b.id as brand_id, b.name as brand_name, c.id as category_id, c.name as category_name from item i "
+                    + "inner join brand b on i.brand = b.id inner join category c on i.category = c.id;";
             
             myStmt = myConn.prepareStatement(query);
             
@@ -66,19 +68,32 @@ public class DbUtil {
             
             while(myRs.next()) {
                 Item item = new Item();
+                Brand brand = new Brand();
+                Category category = new Category();
+                
                 int id = myRs.getInt("id");
                 String name = myRs.getString("name");
                 String code = myRs.getString("code");
                 String description = myRs.getString("description");
-                String brand = myRs.getString("brand");
-                String category = myRs.getString("category");
                 BigDecimal price = myRs.getBigDecimal("price");
                 BigDecimal resellerPrice = myRs.getBigDecimal("reseller_price");
                 int stock = myRs.getInt("stock");
                 
+                int brandId = myRs.getInt("brand_id");
+                String brandName = myRs.getString("brand_name");
+                int categoryId = myRs.getInt("category_id");
+                String categoryName = myRs.getString("category_name");
+                
+                brand.setId(brandId);
+                brand.setName(brandName);
+                category.setId(categoryId);
+                category.setName(categoryName);
+                
                 item.setId(id);
                 item.setName(name);
                 item.setCode(code);
+                item.setBrand(brand);
+                item.setCategory(category);
                 item.setDescription(description);
                 item.setBrand(brand);
                 item.setCategory(category);
@@ -104,14 +119,14 @@ public class DbUtil {
         try {
             
             myConn = datasource.getConnection();
-            String query = "insert into item(name, code, description, brand, category, price, reseller_price, stock) values(?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "insert into item(name, code, brand, category, description, price, reseller_price, stock) values(?, ?, ?, ?, ?, ?, ?, ?)";
             
             myStmt = myConn.prepareStatement(query);
             myStmt.setString(1, item.getName());
             myStmt.setString(2, item.getCode());
-            myStmt.setString(3, item.getDescription());
-            myStmt.setString(4, item.getBrand());
-            myStmt.setString(5, item.getCategory());
+            myStmt.setInt(3, item.getBrand().getId());
+            myStmt.setInt(4, item.getCategory().getId());
+            myStmt.setString(5, item.getDescription());
             myStmt.setBigDecimal(6, item.getPrice());
             myStmt.setBigDecimal(7, item.getResellerPrice());
             myStmt.setInt(8, item.getStock());
@@ -183,7 +198,10 @@ public class DbUtil {
         try {
             
             myConn = datasource.getConnection();
-            String query = "select * from item where id = ?";
+            String query = "select i.id, i.name, i.code, i.description, i.price, i.reseller_price,  "
+                    + "i.stock, b.id as brand_id, b.name as brand_name, c.id as category_id, c.name as category_name from item i "
+                    + "inner join brand b on i.brand = b.id inner join category c on i.category = c.id "
+                    + "where i.id = ?";
             
             myStmt = myConn.prepareStatement(query);
             myStmt.setInt(1, itemId);
@@ -194,15 +212,30 @@ public class DbUtil {
                 int id = myRs.getInt("id");
                 String name = myRs.getString("name");
                 String code = myRs.getString("code");
+                int brandId = myRs.getInt("brand_id");
+                String brandName = myRs.getString("brand_name");
+                int categoryId = myRs.getInt("category_id");
+                String categoryName = myRs.getString("category_name");
                 String description = myRs.getString("description");
                 BigDecimal price = myRs.getBigDecimal("price");
                 BigDecimal resellerPrice = myRs.getBigDecimal("reseller_price");
                 int stock = myRs.getInt("stock");
                 
+                Brand brand = new Brand();
+                Category category = new Category();
+                
+                brand.setId(brandId);
+                brand.setName(brandName);
+                
+                category.setId(categoryId);
+                category.setName(categoryName);
+                
                 item = new Item();
                 item.setId(id);
                 item.setName(name);
                 item.setCode(code);
+                item.setBrand(brand);
+                item.setCategory(category);
                 item.setDescription(description);
                 item.setPrice(price);
                 item.setResellerPrice(resellerPrice);
@@ -223,16 +256,18 @@ public class DbUtil {
         try {
             
             myConn = datasource.getConnection();
-            String query = "update item set name = ?, code = ?, description = ?, price = ?, reseller_price = ?, "
+            String query = "update item set name = ?, code = ?, brand = ?, category = ?, description = ?, price = ?, reseller_price = ?, "
                     + "stock = ? where id = ?";
             myStmt = myConn.prepareStatement(query);
             myStmt.setString(1, item.getName());
             myStmt.setString(2, item.getCode());
-            myStmt.setString(3, item.getDescription());
-            myStmt.setBigDecimal(4, item.getPrice());
-            myStmt.setBigDecimal(5, item.getResellerPrice());
-            myStmt.setInt(6, item.getStock());
-            myStmt.setInt(7, item.getId());
+            myStmt.setInt(3, item.getBrand().getId());
+            myStmt.setInt(4, item.getCategory().getId());
+            myStmt.setString(5, item.getDescription());
+            myStmt.setBigDecimal(6, item.getPrice());
+            myStmt.setBigDecimal(7, item.getResellerPrice());
+            myStmt.setInt(8, item.getStock());
+            myStmt.setInt(9, item.getId());
             
             myStmt.execute();
         }finally{

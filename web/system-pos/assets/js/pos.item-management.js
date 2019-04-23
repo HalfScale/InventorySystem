@@ -34,7 +34,7 @@ setModalOkBttn.onclick = function() {
     //    console.log('currentItemMap', currentItemMap);
         for(var i = 0; i < itemRow.length; i++){
             if (itemRow[i].dataset['itemId'] == currentItemMap['id'] ) {
-                itemRow[i].children[5].innerHTML = stock - quantity;
+                itemRow[i].children[7].innerHTML = stock - quantity;
                 break;
             }
         }
@@ -135,8 +135,8 @@ cartItems.addEventListener('click', function(event) {
    for(var i = 0; i < itemRow.length; i++){
         if (itemRow[i].dataset['itemId'] == divBox.dataset['itemId']) {
             var cartItemQuantity = divBox.querySelector('.item-quantity').getAttribute('title');
-            var itemStock = itemRow[i].children[5].innerHTML;
-            itemRow[i].children[5].innerHTML = parseFloat(cartItemQuantity) + parseFloat(itemStock);
+            var itemStock = itemRow[i].children[7].innerHTML;
+            itemRow[i].children[7].innerHTML = parseFloat(cartItemQuantity) + parseFloat(itemStock);
             break;
         }
     }

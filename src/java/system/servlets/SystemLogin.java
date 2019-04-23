@@ -5,8 +5,12 @@
  */
 package system.servlets;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -16,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import system.util.Console;
 import system.util.DbUtil;
 import system.valueobject.LogType;
 import system.valueobject.User;
@@ -51,19 +56,50 @@ public class SystemLogin extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SystemLogin</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet SystemLogin at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        
+        Map result = new HashMap();
+        Gson gson = new Gson();
+        String user = request.getParameter("username"); 
+        String pass = request.getParameter("password"); 
+        
+        try {
+            // query the given user and pass
+            User activeUser = dbUtil.getUser(user, pass);
+            
+            if(activeUser != null) {
+                HttpSession session = request.getSession();
+                session.setAttribute("active_user", activeUser);
+                Console.log("User:", activeUser.getName());
+                
+                registerSystemLog(request, response, LogType.LOGIN);
+                result.put("status", 0);
+                result.put("message", "Login successful!");
+//                response.sendRedirect(request.getContextPath() + "/system-home/home.jsp");
+            }else {
+                Console.log("Incorrect user and password");
+                result.put("status", 1);
+                result.put("message", "Incorrect user and password...");
+            }
+            //then check if its a valid user
+        }catch(ServletException e) {
+            result.put("status", 1);
+            result.put("message", e.getMessage());
+            
+        }catch(SQLException e) {
+            result.put("status", 1);
+            result.put("message", e.getMessage());
+            
+        }catch(Exception e) {
+            result.put("status", 1);
+            result.put("message", e.getMessage());
+        
         }
+        
+        response.setHeader("Content-Type", "application/json");
+        PrintWriter out = response.getWriter();
+        String data = gson.toJson(result);
+        Console.log("data", data);
+        out.println(data);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -92,29 +128,7 @@ public class SystemLogin extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        String user = request.getParameter("username"); 
-        String pass = request.getParameter("password"); 
-        
-        try {
-            // query the given user and pass
-            User activeUser = dbUtil.getUser(user, pass);
-            
-            if(activeUser != null) {
-                HttpSession session = request.getSession();
-                session.setAttribute("active_user", activeUser);
-                System.out.println("User " + activeUser.getName() + " logged in.");
-                
-                registerSystemLog(request, response, LogType.LOGIN);
-                response.sendRedirect(request.getContextPath() + "/system-home/home.jsp");
-            }else {
-                System.out.println("Incorrect user and password");
-                response.sendRedirect(request.getContextPath() + "/");
-            }
-            //then check if its a valid user
-        }catch(Exception e) {
-            throw new ServletException(e);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -134,7 +148,7 @@ public class SystemLogin extends HttpServlet {
         if(session != null) {
             User user = (User) request.getSession(false).getAttribute("active_user");
             dbUtil.registerLog(type, user);
-            System.out.println("User: " + user.getName());
+            Console.log("User:", user.getName());
         }else {
             response.sendRedirect(request.getContextPath() + "/index.html");
         }

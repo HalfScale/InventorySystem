@@ -18,10 +18,6 @@ import java.util.TimeZone;
  */
 public class Util {
     
-    public boolean checkSession () {
-    
-    }
-    
     //<editor-fold defaultstate="collapsed" desc="Utilities for dates">
     public static LocalDateTime toLocalDateTime(Timestamp timestamp) {
         return LocalDateTime.ofInstant(timestamp.toInstant(), ZoneOffset.UTC);
@@ -46,5 +42,6 @@ public class Util {
 
     }
     //</editor-fold>
+    
     
 }

@@ -15,6 +15,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import system.util.Console;
 import system.valueobject.User;
 
 /**
@@ -38,12 +39,14 @@ public class UserSessionFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         
         HttpSession session = httpRequest.getSession(false);
-//        System.out.println("is user logged in?: " + session == null);
-        if (session != null) {
+//        Console.log("session is not null?", session != null);
+//        Console.log("session attribute is not null?", session.getAttribute("active_user") != null);
+        
+        if (session != null && session.getAttribute("active_user") != null) {
             fc.doFilter(request, response);
         }else {
             httpResponse.sendRedirect(contextPath + "/");
-            System.out.println("No user is existing in this session");
+            Console.log("No user is existing in this session");
         }
     
     }

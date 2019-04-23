@@ -23,16 +23,59 @@ var categoryCloseBttn = document.querySelector('.category-modal-close');
 var addItemForm = document.getElementById('add-item-form');
 var updateItemForm = document.getElementById('update-item-form');
 
+var addBrandSelect = document.getElementById('add-brand');
+var addCategorySelect = document.getElementById('add-category');
+
+var updateBrandSelect = document.getElementById('update-brand');
+var updateCategorySelect = document.getElementById('update-category');
+
 addItemBttn.onclick = function() {
-    console.log('click!');
+    
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = '?command=LIST_BRAND';
+
+    xmlhttp.open('GET', url + param, true);
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            var result = JSON.parse(this.responseText);
+            console.log('brand result', result);
+            addOptionFiller(addBrandSelect, 'Select a brand');
+            addOption(addBrandSelect, result);
+
+        }
+    }
+    
+    xmlhttp.send();
+
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = '?command=LIST_CATEGORY';
+
+    xmlhttp.open('GET', url + param, true);
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            var result = JSON.parse(this.responseText);
+            console.log('category result', result);
+            addOptionFiller(addCategorySelect, 'Select a category');
+            addOption(addCategorySelect, result);
+        }
+    }
+    
+    xmlhttp.send();
+    
     addModal.style.display = 'block';
 };
 
 addCloseBttn.onclick = function() {
+    removeElemChild(addBrandSelect);
+    removeElemChild(addCategorySelect);
     addModal.style.display = 'none';
 };
 
 updateCloseBttn.onclick = function() {
+    removeElemChild(updateBrandSelect);
+    removeElemChild(updateCategorySelect);
     updateModal.style.display = 'none';
 };
 
@@ -92,69 +135,6 @@ addItemForm.onsubmit = function(event) {
     xmlhttp.send(param);
 };
 
-//<editor-fold defaultstate="collapsed" desc="code for loading category & brands for add-item">
-var addBrandSelect = document.getElementById('add-brand');
-var addCategorySelect = document.getElementById('add-category');
-
-var xmlhttp = new XMLHttpRequest();
-var url = '/InventorySystem/SystemController';
-var param = '?command=LIST_BRAND';
-
-xmlhttp.open('GET', url + param, true);
-xmlhttp.onreadystatechange = function() {
-    if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-        var result = JSON.parse(this.responseText);
-//        console.log('brand result', result);
-        var optionPlaceHolder = document.createElement('option');
-        optionPlaceHolder.innerHTML = 'Select a log type';
-        optionPlaceHolder.disabled = true;
-        optionPlaceHolder.style.display = 'none';
-        optionPlaceHolder.selected = true;
-        addBrandSelect.appendChild(optionPlaceHolder);
-
-        result.forEach(function(brand) {
-            var option = document.createElement('option');
-            option.innerHTML = capitalize(brand.name).replace('-', ' ');
-            option.value = brand.id;
-
-            addBrandSelect.appendChild(option);
-        });
-
-    }
-}
-xmlhttp.send();
-
-var xmlhttp = new XMLHttpRequest();
-var url = '/InventorySystem/SystemController';
-var param = '?command=LIST_CATEGORY';
-
-xmlhttp.open('GET', url + param, true);
-xmlhttp.onreadystatechange = function() {
-    if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-        var result = JSON.parse(this.responseText);
-//        console.log('brand result', result);
-        var optionPlaceHolder = document.createElement('option');
-        optionPlaceHolder.innerHTML = 'Select a log type';
-        optionPlaceHolder.disabled = true;
-        optionPlaceHolder.style.display = 'none';
-        optionPlaceHolder.selected = true;
-        addCategorySelect.appendChild(optionPlaceHolder);
-
-        result.forEach(function(category) {
-            var option = document.createElement('option');
-            option.innerHTML = capitalize(category.name).replace('-', ' ');
-            option.value = category.id;
-
-            addCategorySelect.appendChild(option);
-        });
-
-    }
-}
-xmlhttp.send();
-
-//</editor-fold>
-
-
 //<editor-fold defaultstate="expanded" desc="code for displaying item">
 var xmlhttp = new XMLHttpRequest();
 var param = '?command=LIST';
@@ -172,14 +152,27 @@ xmlhttp.onreadystatechange = function() {
         result.forEach(function(item) {
             var tableRow = document.createElement('tr');
             tableRow.className = 'item-row';
-            tableRow.dataset.itemId = item.id;
+            tableRow.dataset['itemId'] = item.id;
             
             for(var key in item) {
                 //ommit the id field here
                 if(!excludedRows.includes(key)) {
                     var tableCell = document.createElement('td');
+                    tableCell.classList.add(key);
                     tableCell.innerHTML = item[key];
                     
+                    //brand and category are special cases
+                    if(key === 'brand' || key === 'category') {
+                        tableCell.innerHTML = item[key].name;
+                        
+                        if(key === 'brand') {
+                            tableRow.dataset['brandId'] = item[key].id;
+                        }else {
+                            tableRow.dataset['categoryId'] = item[key].id;
+                        }
+                    }
+                    
+                    //price and resellerPrice needs to be formatted
                     if (key === 'price' || key === 'resellerPrice') {
                         //price should have 2 decimal places
                         tableCell.innerHTML = parseFloat(item[key]).toFixed(2);
@@ -203,8 +196,41 @@ xmlhttp.send();
 
 //Update item table row clicky (modal pop up)
 var itemRow = document.querySelector('.table-body');
+
 itemRow.addEventListener('click', function(event){
     console.log(event.target.parentNode);
+    
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = '?command=LIST_BRAND';
+
+    xmlhttp.open('GET', url + param, true);
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            var result = JSON.parse(this.responseText);
+            console.log('brand result', result);
+            addOption(updateBrandSelect, result);
+
+        }
+    }
+
+    xmlhttp.send();
+
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = '?command=LIST_CATEGORY';
+
+    xmlhttp.open('GET', url + param, true);
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            var result = JSON.parse(this.responseText);
+            console.log('category result', result);
+            addOption(updateCategorySelect, result);
+        }
+    }
+
+    xmlhttp.send();
+    
     var row = event.target.parentNode;
     
     var xmlhttp = new XMLHttpRequest();
@@ -217,20 +243,23 @@ itemRow.addEventListener('click', function(event){
     
     xmlhttp.onreadystatechange = function() {
         if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            console.log(this.responseText);
+            console.log('result for update', this.responseText);
             var item = JSON.parse(this.responseText);
             
-            var id = document.getElementById("update-id");
-            var name = document.getElementById("update-name");
-            var code = document.getElementById("update-code");
-            var description = document.getElementById("update-description");
-            var price = document.getElementById("update-price");
-            var resellerPrice = document.getElementById("update-reseller-price");
-            var stock = document.getElementById("update-stock");
+            var id = document.getElementById('update-id');
+            var name = document.getElementById('update-name');
+            var code = document.getElementById('update-code');
+            var description = document.getElementById('update-description');
+            var price = document.getElementById('update-price');
+            var resellerPrice = document.getElementById('update-reseller-price');
+            var stock = document.getElementById('update-stock');
             
             id.value = item.id;
             name.value = item.name;
             code.value = item.code;
+            updateBrandSelect.value = item.brand.id;
+            console.log('category id', item.category.id);
+            updateCategorySelect.value = item.category.id;
             description.value = item.description;
             price.value = parseFloat(item.price).toFixed(2);
             resellerPrice.value = parseFloat(item.resellerPrice).toFixed(2);
@@ -250,6 +279,8 @@ updateItemForm.onsubmit = function(event) {
     var id = document.getElementById("update-id");
     var name = document.getElementById("update-name");
     var code = document.getElementById("update-code");
+    var brand = document.getElementById("update-brand");
+    var category = document.getElementById("update-category");
     var description = document.getElementById("update-description");
     var price = document.getElementById("update-price");
     var resellerPrice = document.getElementById("update-reseller-price");
@@ -259,6 +290,14 @@ updateItemForm.onsubmit = function(event) {
         id: id.value,
         name: name.value,
         code: code.value,
+        brand: {
+            id: brand.value,
+            name: brand.options[brand.selectedIndex].text
+        },
+        category: {
+            id: category.value,
+            name: category.options[category.selectedIndex].text
+        },
         description: description.value,
         price: toTwoDecimal(price.value),
         resellerPrice: toTwoDecimal(resellerPrice.value),
@@ -267,7 +306,7 @@ updateItemForm.onsubmit = function(event) {
     
     //the arrangement of this array is the same
     // with the arrangement of the table columns
-    var dataArray = [data.name, data.code, data.description, data.price, data.resellerPrice, data.stock];
+    var dataArray = [data.name, data.code, {id: data.brand.id, name: data.brand.name}, {id: data.category.id, name: data.category.name}, data.description, data.price, data.resellerPrice, data.stock];
     
     var xmlhttp = new XMLHttpRequest();
     var url = '/InventorySystem/SystemController';
@@ -282,13 +321,19 @@ updateItemForm.onsubmit = function(event) {
             
             //idk why the fck i need to parse this.
             //It doesn't go through the if statement if not parsed :/
+            console.log('update form result', this.responseText);
             var targetRowId = parseInt(this.responseText); 
-
             for (var i = 0, row; row = tableBody.rows[i] ; i++) {
                 if (targetRowId == row.dataset.itemId) {
                     
                     for (var i = 0, cell; cell = row.cells[i]; i++) {
-                        cell.innerHTML = dataArray[i];
+                        console.log('innerHTML', cell.innerHTML );
+                        if(cell.classList.contains('brand') || cell.classList.contains('category')) {
+                            console.log('brand or category', dataArray[i].name);
+                            cell.innerHTML = dataArray[i].name;
+                        }else {
+                            cell.innerHTML = dataArray[i];
+                        }
                     }
                     
                     updateCloseBttn.click();
@@ -472,7 +517,7 @@ archiveItemBttn.onclick = function() {
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="code for item brands">
-var addItemBrandBttn = document.getElementById('brand-item-add');
+var brandForm = document.getElementById('brand-form');
 var brandInput = document.querySelector('.brand-item-input');
 console.log('');
 brandItemBttn.onclick = function() {
@@ -504,7 +549,8 @@ brandItemBttn.onclick = function() {
     xmlhttp.send();
 }
 
-addItemBrandBttn.onclick = function() {
+brandForm.onsubmit = function(event) {
+    event.preventDefault();
     console.log('input value', brandInput.value);
     
     var xmlhttp = new XMLHttpRequest();
@@ -534,7 +580,7 @@ addItemBrandBttn.onclick = function() {
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="code for item category">
-var addItemCategoryBttn = document.getElementById('category-item-add');
+var categoryForm = document.getElementById('category-form');
 var categoryInput = document.querySelector('.category-item-input');
 
 categoryItemBttn.onclick = function() {
@@ -563,7 +609,8 @@ categoryItemBttn.onclick = function() {
     xmlhttp.send();
 }
 
-addItemCategoryBttn.onclick = function() {
+categoryForm.onsubmit = function(event) {
+    event.preventDefault();
     console.log('input value', categoryInput.value);
     
     var xmlhttp = new XMLHttpRequest();
@@ -632,14 +679,6 @@ function findParentClassName(element, targetParent) {
     }
     
     return null;
-}
-
-function removeElemChild(elem) {
-    while(elem.lastChild) {
-        elem.removeChild(elem.lastChild);
-    }
-    
-    return elem;
 }
 
 function createDummyRow(text, colspan) {
