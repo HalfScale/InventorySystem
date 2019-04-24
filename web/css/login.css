@@ -30,3 +30,8 @@ input[type=text], input[type=password], input[type=submit]{
     padding: 10px;
     
 }
+
+.status-bar{
+    display: none;
+    text-align: center;
+}

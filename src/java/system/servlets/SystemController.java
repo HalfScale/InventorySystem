@@ -13,6 +13,7 @@ import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import system.util.Console;
 import system.util.GsonUTCDateAdapter;
 import system.util.DbUtil;
 import system.valueobject.Brand;
@@ -223,6 +225,7 @@ public class SystemController extends HttpServlet {
         throws Exception{
         
         String itemParam = request.getParameter("param");
+        Console.log("itemParam", itemParam);
         
         Gson gson = new Gson();
         Item item = gson.fromJson(itemParam, Item.class);
@@ -251,15 +254,19 @@ public class SystemController extends HttpServlet {
         throws Exception{
        
         String param = request.getParameter("param");
+        System.out.println("parm: " + param);
         Gson gson = new Gson();
         
         Item item = gson.fromJson(param, Item.class);
         
         dbUtil.updateItem(item);
         
+        registerSystemLog(request, response, LogType.UPDATE_ITEM);
+        
         PrintWriter out = response.getWriter();
         out.println(item.getId());
-        registerSystemLog(request, response, LogType.UPDATE_ITEM);
+//        
+        
     }
 
     private void deleteItem(HttpServletRequest request, HttpServletResponse response) 
@@ -352,12 +359,16 @@ public class SystemController extends HttpServlet {
     private void registerSystemLog(HttpServletRequest request, HttpServletResponse response, int type) 
         throws Exception {
         HttpSession session = request.getSession(false);
+        System.out.println("session: " + session.getAttribute("active_user"));
+        User user = (User) session.getAttribute("active_user");
+        System.out.println("User: " + user);
         
-        if(session != null) {
-            User user = (User) session.getAttribute("active_user");
+        System.out.println("session != null: " + session != null);
+        if(session != null && user != null) {
             dbUtil.registerLog(type, user);
             System.out.println("User: " + user.getName());
         }else {
+            System.out.println("session and user is null");
             response.sendRedirect(request.getContextPath() + "/index.html");
         }
     }
@@ -407,4 +418,5 @@ public class SystemController extends HttpServlet {
         response.setHeader("Content-Type", "text/plain");
         out.println(message);
     }
+
 }

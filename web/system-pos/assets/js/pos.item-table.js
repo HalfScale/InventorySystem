@@ -27,6 +27,10 @@ xmlhttp.onreadystatechange = function() {
                         tableCell.innerHTML = parseFloat(item[key]).toFixed(2);
                     }
                     
+                    if(key === 'brand' || key === 'category') {
+                         tableCell.innerHTML = item[key].name;
+                    }
+                    
                     tableRow.appendChild(tableCell);
                 }
                 

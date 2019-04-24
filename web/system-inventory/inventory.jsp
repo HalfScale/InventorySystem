@@ -36,9 +36,9 @@
                         <tr>
                             <th><span>Name</span></th>
                             <th><span>Code</span></th>
-                            <th><span>Description</span></th>
                             <th><span>Brand</span></th>
                             <th><span>Category</span></th>
+                            <th><span>Description</span></th>
                             <th><span>Price</span></th>
                             <th><span>Reseller Price</span></th>
                             <th><span>Stock</span></th>
@@ -70,15 +70,15 @@
                         <label>Description:</label>
                         <input id="add-description" type="text" name="description" required/>
                         <label>Brand:</label>
-                        <select id="add-brand" class="select-generic" name="brand"></select>
+                        <select id="add-brand" class="select-generic" name="brand" required=""></select>
                         <label>Category:</label>
-                        <select id="add-category" class="select-generic" name="description"></select>
+                        <select id="add-category" class="select-generic" name="description" required=""></select>
                         <label>Price:</label>
-                        <input id="add-price" type="text" name="price" required=""/>
+                        <input id="add-price" type="text" name="price" pattern="^\d+(\.\d{1,2})?$" title="Up to two decimal places" required/>
                         <label>Reseller Price:</label>
-                        <input id="add-reseller-price" type="text" name="reseller-price" required/>
+                        <input id="add-reseller-price" type="text" pattern="^\d+(\.\d{1,2})?$" title="Up to two decimal places" name="reseller-price" required/>
                         <label>Stock:</label>
-                        <input id="add-stock" type="text" name="stock" required/>
+                        <input id="add-stock" type="text" name="stock" pattern="^\d+$" title="Decimal places and letter are not allowed" required/>
                         <input type="submit" value="Add" class="sign-in-button">
                     </div>
 
@@ -99,6 +99,10 @@
                         <input id="update-name" type="text" name="name" required/>
                         <label>Code:</label>
                         <input id="update-code" type="text" name="code" required/>
+                        <label>Brand:</label>
+                        <select id="update-brand" class="select-generic" name="brand" required=""></select>
+                        <label>Category:</label>
+                        <select id="update-category" class="select-generic" name="description" required=""></select>
                         <label>Description:</label>
                         <input id="update-description" type="text" name="description" required/>
                         <label>Price:</label>
@@ -221,9 +225,11 @@
                         <span class="close brand-modal-close"> &times;</span>
                     </div>
                     
-                    <input class="brand-item-input" type="text" placeholder="Type the brand here...">
-                    <input id="brand-item-add" type="button" value="Add Brand">
-            
+                    <form id="brand-form">
+                        <input class="brand-item-input" pattern="^[^-\s][a-zA-Z0-9_\s-]+$" type="text" placeholder="Type the brand here...">
+                        <input type="submit" value="Add Brand">
+                    </form>
+                    
                     <div class="scrollable-table">
                         <table id="brand-table">
                             <thead>
@@ -247,9 +253,11 @@
                         <span class="close category-modal-close"> &times;</span>
                     </div>
                     
-                    <input class="category-item-input" type="text" placeholder="Type the brand here...">
-                    <input id="category-item-add" type="button" value="Add Category">
-
+                    <form id="category-form">
+                        <input class="category-item-input" pattern="^[^-\s][a-zA-Z0-9_\s-]+$" type="text" placeholder="Type the brand here...">
+                        <input type="submit" value="Add Category">
+                    </form>
+                    
                     <div class="scrollable-table">
                         <table id="category-table">
                             <thead>

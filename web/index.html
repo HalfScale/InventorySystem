@@ -7,19 +7,24 @@
     </head>
     <body>
         <div class="form-container">
-            <form action="SystemLogin" method="POST" id="login-form">
+            <form id="login-form">
                 <div class="form-header">
                     <h2 class="login-header">Login</h2>
                 </div>
                 
                 <div id="content">
                     <label>Username:</label>
-                    <input type="text" name="username"/>
+                    <input id="user" type="text" name="username"/>
                     <label>Password:</label>
-                    <input type="password" name="password"/>
+                    <input id="pass" type="password" name="password"/>
+                    <div class="status-bar">
+                        <span class="status-response"></span>
+                    </div>
                     <input type="submit" value="Sign in" class="sign-in-button">
                 </div>
             </form>
         </div>
+        
+        <script src="script/login.js"></script>
     </body>
 </html>

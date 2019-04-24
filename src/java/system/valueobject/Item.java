@@ -16,9 +16,9 @@ public class Item {
     private int id = -1;
     private String name = "";
     private String code = "";
+    private Brand brand = null;
+    private Category category = null;
     private String description = "";
-    private String brand = "";
-    private String category = "";
     private BigDecimal price = BigDecimal.ZERO;
     private BigDecimal resellerPrice = BigDecimal.ZERO;
     private int stock = 0;
@@ -80,19 +80,19 @@ public class Item {
         this.stock = stock;
     }
 
-    public String getBrand() {
+    public Brand getBrand() {
         return brand;
     }
 
-    public void setBrand(String brand) {
+    public void setBrand(Brand brand) {
         this.brand = brand;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
     
