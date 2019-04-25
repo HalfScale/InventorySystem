@@ -1,4 +1,6 @@
 
+/* global parseFloat */
+
 var itemTable = document.querySelector('.pos-table-body');
 var settingModal = document.querySelector('#pos-quantity-modal');
 var setModalOkBttn = document.querySelector('.pos-modal-ok-button');
@@ -31,20 +33,23 @@ setModalOkBttn.onclick = function() {
         var quantity = modalQtyInput.value;
         var stock = currentItemMap['stock'];
         currentItemMap['cartQuantity'] = quantity;
-    //    console.log('currentItemMap', currentItemMap);
-        for(var i = 0; i < itemRow.length; i++){
-            if (itemRow[i].dataset['itemId'] == currentItemMap['id'] ) {
-                itemRow[i].children[7].innerHTML = stock - quantity;
-                break;
-            }
-        }
         var itemBox = createCartItemBox(currentItemMap);
-
+        console.log('currentItemMap', currentItemMap);
+        
         if (isDuplicate(cartItems, itemBox.dataset['itemId'])) {
             console.log('this item id' + itemBox.dataset['itemId'] + ' is duplicate');
             alert('Duplicate items are not allowed');
             return false;
         }
+        
+        for(var i = 0; i < itemRow.length; i++){
+            if (itemRow[i].dataset['itemId'] == currentItemMap['id'] ) {
+                console.log('children 7', itemRow[i].children[7].innerHTML);
+                itemRow[i].children[7].innerHTML = stock - quantity;
+                break;
+            }
+        }
+
     }else {
         alert('Insufficient item stock!');
     }

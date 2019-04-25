@@ -273,6 +273,25 @@
 
                 </div>
             </div>
+            
+            <div id="brand-delete-modal" class="standard-modal">
+                <div class="brand-modal-content">
+                    <!--header-->
+                    <div class="standard-header">
+                    </div>
+                    
+                    <div class="brand-modal-body">
+                        <section>
+                            <span class="brand-modal-text"></span>
+                        </section>
+                        
+                        <section>
+                            <button class="brand-confirm-button">Confirm</button>
+                            <button class="brand-cancel-button">Cancel</button>
+                        </section>
+                    </div>
+                </div>
+            </div>
         </div>
      
     <script src="js/inventory.js"></script>

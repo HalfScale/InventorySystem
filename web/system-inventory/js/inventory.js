@@ -5,6 +5,8 @@ var archiveModal = document.querySelector('.archive-item-modal');
 var brandModal = document.querySelector('.brand-item-modal');
 var categoryModal = document.querySelector('.category-item-modal');
 
+var brandDeleteModal = document.getElementById('brand-delete-modal');
+
 var brandTableBody = document.querySelector('.item-brand-tbody');
 var categoryTableBody = document.querySelector('.item-category-tbody');
 
@@ -112,9 +114,15 @@ addItemForm.onsubmit = function(event) {
     var data = {
         name: name.value,
         code: code.value,
+        brand: {
+            id: brand.value,
+            name: brand.options[brand.selectedIndex].text
+        },
+        category: {
+            id: category.value,
+            name: category.options[category.selectedIndex].text
+        },
         description: description.value,
-        brand: brand.value,
-        category: category.value,
         price: price.value,
         resellerPrice: resellerPrice.value,
         stock: stock.value

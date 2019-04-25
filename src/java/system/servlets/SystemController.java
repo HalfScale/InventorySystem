@@ -61,18 +61,61 @@ public class SystemController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SystemController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet SystemController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        
+        String command = request.getParameter("command");
+
+        command = command != null ? command : "LIST";
+        System.out.println("Param doGet " + command);
+
+        try {
+            switch (command) {
+                case "LIST":
+                    listItems(request, response);
+                    break;
+                case "ADD":
+                    addItem(request, response);
+                    break;
+                case "LOAD":
+                    loadItem(request, response);
+                    break;
+                case "UPDATE":
+                    updateItem(request, response);
+                    break;
+                case "DELETE":
+                    deleteItem(request, response);
+                    break;
+                case "HISTORY":
+                    viewItemHistory(request, response);
+                    break;
+                case "ARCHIVE":
+                    viewItemArchive(request, response);
+                    break;
+                case "LOG_TYPE":
+                    listLogTypes(request, response);
+                    break;
+                case "LOGS":
+                    listAllLogs(request, response);
+                    break;
+                case "ADD_BRAND":
+                    addBrand(request, response);
+                    break;
+                case "ADD_CATEGORY":
+                    addCategory(request, response);
+                    break;
+                case "LIST_BRAND":
+                    listBrands(request, response);
+                    break;
+                case "LIST_CATEGORY":
+                    listCategories(request, response);
+                    break;
+                case "LOGOUT":
+                    logout(request, response);
+                    break;
+                default:
+                    listItems(request, response);
+            }
+        } catch (Exception e) {
+            throw new ServletException(e);
         }
     }
 
@@ -94,43 +137,7 @@ public class SystemController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String command = request.getParameter("command");
-        
-        command = command != null ? command : "LIST";
-        System.out.println("Param doGet " + command);
-        
-        try {
-            switch (command) {
-                case "LIST": listItems(request, response);
-                    break;
-                case "ADD": addItem(request, response);
-                    break;
-                case "LOAD": loadItem(request, response);
-                    break;
-                case "UPDATE": updateItem(request, response);
-                    break;
-                case "DELETE": deleteItem(request, response);
-                    break;
-                case "HISTORY": viewItemHistory(request, response);
-                    break;
-                case "ARCHIVE": viewItemArchive(request, response);
-                    break;
-                case "LOG_TYPE": listLogTypes(request, response);
-                    break;
-                case "LOGS": listAllLogs(request, response);
-                    break;
-                case "LIST_BRAND": listBrands(request, response);
-                    break;
-                case "LIST_CATEGORY": listCategories(request, response);
-                    break;
-                case "LOGOUT": logout(request, response);
-                    break;
-                default:
-                    listItems(request, response);
-            }
-        }catch(Exception e){
-            throw new ServletException(e);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -142,35 +149,8 @@ public class SystemController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
-        String command = request.getParameter("command");
-        //assign 'LIST' command if null
-        System.out.println("command isNull?" + command == null);
-        System.out.println("command isNull?" + command);
-        command = command != null ? command : "LIST";
-        System.out.println("Param doPost " + command);
-        try {
-            switch (command) {
-                case "LIST": listItems(request, response);
-                    break;
-                case "ADD": addItem(request, response);
-                    break;
-                case "UPDATE": updateItem(request, response);
-                    break;
-                case "CHECKOUT": checkoutItems(request, response);
-                    break;
-                case "ADD_BRAND": addBrand(request, response);
-                    break;
-                case "ADD_CATEGORY": addCategory(request, response);
-                    break;
-                default:
-                    listItems(request, response);
-            }
-        }catch(Exception e){
-            throw new ServletException(e);
-        }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        processRequest(request, response);
     }
 
     /**
@@ -359,9 +339,7 @@ public class SystemController extends HttpServlet {
     private void registerSystemLog(HttpServletRequest request, HttpServletResponse response, int type) 
         throws Exception {
         HttpSession session = request.getSession(false);
-        System.out.println("session: " + session.getAttribute("active_user"));
         User user = (User) session.getAttribute("active_user");
-        System.out.println("User: " + user);
         
         System.out.println("session != null: " + session != null);
         if(session != null && user != null) {
@@ -383,6 +361,8 @@ public class SystemController extends HttpServlet {
         PrintWriter out = response.getWriter();
         response.setHeader("Content-Type", "text/plain");
         out.println(message);
+        
+        registerSystemLog(request, response, LogType.ADD_BRAND);
     }
 
     private void listBrands(HttpServletRequest request, HttpServletResponse response) 
@@ -417,6 +397,8 @@ public class SystemController extends HttpServlet {
         PrintWriter out = response.getWriter();
         response.setHeader("Content-Type", "text/plain");
         out.println(message);
+        
+        registerSystemLog(request, response, LogType.ADD_CATEGORY);
     }
 
 }

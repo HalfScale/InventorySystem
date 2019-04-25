@@ -85,7 +85,7 @@
                     </section>
                     
                     <section>
-                        <button class="pos-modal-ok-button">Ok</button>
+                        <button class="pos-modal-ok-button">Confirm</button>
                         <button class="pos-modal-cancel-button">Cancel</button>
                     </section>
                 </div>
