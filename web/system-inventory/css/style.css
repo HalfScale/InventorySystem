@@ -99,6 +99,10 @@ tbody tr:hover {
     padding: 15px;
 }
 
+.standard-section{
+    padding: 5px;
+}
+
 #add-item-form{
     width: 400px;
     margin: auto auto;
@@ -181,33 +185,20 @@ div.scrollable-table{
     overflow: auto;
 }
 
-#brand-table{
+#brand-table, #category-table, #transaction-table{
     width: 100%;
 }
 
-.item-brand-div{
+.item-brand-div, .item-category-div, .item-transaction-div{
     width: 25%;
     margin: 10px auto;
 }
 
-.item-brand-tbody{
+.item-brand-tbody, .item-category-tbody, .item-transaction-tbody{
     background-color: #ffffff;
 }
 
-#category-table{
-    width: 100%;
-}
-
-.item-category-div{
-    width: 25%;
-    margin: 10px auto;
-}
-
-.item-category-tbody{
-    background-color: #ffffff;
-}
-
-.brand-modal-content{
+.brand-modal-content, .category-modal-content, .transaction-modal-content{
     width: 270px;
     margin: auto;
     background-color: #ffffff;

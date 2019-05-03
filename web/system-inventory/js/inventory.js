@@ -4,16 +4,20 @@ var historyModal = document.querySelector('.history-item-modal');
 var archiveModal = document.querySelector('.archive-item-modal');
 var brandModal = document.querySelector('.brand-item-modal');
 var categoryModal = document.querySelector('.category-item-modal');
+var transactionModal = document.querySelector('.transaction-item-modal');
 
 var brandDeleteModal = document.getElementById('brand-delete-modal');
+var categoryDeleteModal = document.getElementById('category-delete-modal');
 
 var brandTableBody = document.querySelector('.item-brand-tbody');
 var categoryTableBody = document.querySelector('.item-category-tbody');
+var transactionTableBody = document.querySelector('.item-transaction-tbody');
 
 var addItemBttn = document.getElementById('add-item-span');
 var archiveItemBttn = document.getElementById('archive-item-span');
 var brandItemBttn = document.getElementById('brand-item-span');
 var categoryItemBttn = document.getElementById('categories-item-span');
+var transactionItemBttn = document.getElementById('transaction-item-span');
 
 var addCloseBttn = document.querySelector('.add-modal-close');
 var updateCloseBttn = document.querySelector('.update-modal-close');
@@ -21,6 +25,7 @@ var historyCloseBttn = document.querySelector('.history-modal-close');
 var archiveCloseBttn = document.querySelector('.archive-modal-close');
 var brandCloseBttn = document.querySelector('.brand-modal-close');
 var categoryCloseBttn = document.querySelector('.category-modal-close');
+var transactionCloseBttn = document.querySelector('.transaction-modal-close');
 
 var addItemForm = document.getElementById('add-item-form');
 var updateItemForm = document.getElementById('update-item-form');
@@ -97,6 +102,11 @@ categoryCloseBttn.onclick = function() {
 brandCloseBttn.onclick = function() {
     brandModal.style.display = 'none';
     removeElemChild(brandTableBody);
+}
+
+transactionCloseBttn.onclick = function() {
+    transactionModal.style.display = 'none';
+    removeElemChild(transactionTableBody);
 }
 
 addItemForm.onsubmit = function(event) {
@@ -203,9 +213,9 @@ xmlhttp.send();
 //<editor-fold defaultstate="collapsed" desc="code for updating item">
 
 //Update item table row clicky (modal pop up)
-var itemRow = document.querySelector('.table-body');
+var itemRowParent = document.querySelector('.table-body');
 
-itemRow.addEventListener('click', function(event){
+itemRowParent.addEventListener('click', function(event){
     console.log(event.target.parentNode);
     
     var xmlhttp = new XMLHttpRequest();
@@ -527,7 +537,11 @@ archiveItemBttn.onclick = function() {
 //<editor-fold defaultstate="collapsed" desc="code for item brands">
 var brandForm = document.getElementById('brand-form');
 var brandInput = document.querySelector('.brand-item-input');
-console.log('');
+var brandRowParent = document.querySelector('.item-brand-tbody');
+var brandCancelBttn = document.querySelector('.brand-cancel-button');
+var brandModalText = document.querySelector('.brand-modal-text');
+var brandConfirmBttn = document.querySelector('.brand-confirm-button');
+
 brandItemBttn.onclick = function() {
     brandModal.style.display = 'block';
     
@@ -545,6 +559,7 @@ brandItemBttn.onclick = function() {
             brands.forEach(function(brand) {
                 var row = document.createElement('tr');
                 var cell = document.createElement('td');
+                row.dataset['brandId'] = brand.id;
                 cell.innerHTML = brand.name;
                 
                 row.appendChild(cell);
@@ -556,7 +571,7 @@ brandItemBttn.onclick = function() {
     
     xmlhttp.send();
 }
-
+var brandTable = document.getElementById('brand-table');
 brandForm.onsubmit = function(event) {
     event.preventDefault();
     console.log('input value', brandInput.value);
@@ -585,18 +600,61 @@ brandForm.onsubmit = function(event) {
     
     xmlhttp.send(param);
 }
+
+var selectedBrandId;
+brandRowParent.onclick = function(event) {
+    brandDeleteModal.style.display = 'block';
+    brandModalText.innerHTML = 'Delete ' + '"' + event.target.innerHTML + '"' + ' ?';
+    selectedBrandId = event.target.parentNode.dataset['brandId'];
+    
+}
+
+brandConfirmBttn.onclick = function() {
+    console.log('selected', selectedBrandId);
+
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = '?command=DELETE_BRAND&id=' + selectedBrandId;
+
+    xmlhttp.open('GET', url + param, true);
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            var targetId = this.responseText;
+            console.log('targetId', targetId);
+        
+            for(var i = 0, row; row = brandTable.rows[i]; i++) {
+                console.log('dataset', row.dataset['brandId']);
+                if(row.dataset['brandId'] == parseFloat(targetId)) {
+                    row.parentNode.removeChild(row);
+                    brandCancelBttn.click();
+                }
+            }
+        }
+    }
+
+    xmlhttp.send();
+}
+
+brandCancelBttn.onclick = function() {
+    brandDeleteModal.style.display = 'none';
+    
+}
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="code for item category">
 var categoryForm = document.getElementById('category-form');
 var categoryInput = document.querySelector('.category-item-input');
+var categoryRowParent = document.querySelector('.item-category-tbody');
+var categoryModalTxt = document.querySelector('.category-modal-text');
+var categoryCancelBttn = document.querySelector('.category-cancel-button');
+var categoryConfirmBttn = document.querySelector('.category-confirm-button');
 
 categoryItemBttn.onclick = function() {
     categoryModal.style.display = 'block';
     
     var xmlhttp = new XMLHttpRequest();
     var url = '/InventorySystem/SystemController';
-    var param = '?command=LIST_CATEGORY'
+    var param = '?command=LIST_CATEGORY';
     xmlhttp.open('GET', url + param, true);
     xmlhttp.onreadystatechange = function() {
         if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
@@ -605,6 +663,7 @@ categoryItemBttn.onclick = function() {
             
             categories.forEach(function(category) {
                 var row = document.createElement('tr');
+                row.dataset['categoryId'] = category.id;
                 var cell = document.createElement('td');
                 cell.innerHTML = category.name;
                 
@@ -646,7 +705,96 @@ categoryForm.onsubmit = function(event) {
     xmlhttp.send(param);
     
 }
+var categoryTable = document.querySelector('#category-table');
+categoryConfirmBttn.onclick = function() {
+    console.log('confirm category!');
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = '?command=DELETE_CATEGORY&id=' + selectedCategoryId;
+    
+    xmlhttp.open('GET', url + param, true);
+    xmlhttp.onreadystatechange = function() {
+        if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            console.log('result', this.responseText);
+            var targetId = parseFloat(this.responseText);
+            
+            for(var i = 0, row; row = categoryTable.rows[i]; i++) {
+                if (row.dataset['categoryId'] == targetId) {
+                    row.parentNode.removeChild(row);
+                    categoryCancelBttn.click();
+                }
+            }
+        }
+    }
+    
+    xmlhttp.send();
+}
+
+var selectedCategoryId;
+categoryRowParent.onclick = function(event) {
+    categoryDeleteModal.style.display = 'block';
+    categoryModalTxt.innerHTML = 'Delete ' + '"' + event.target.innerHTML + '"' + ' ?';
+    selectedCategoryId = event.target.parentNode.dataset['categoryId'];
+}
+
+categoryCancelBttn.onclick = function() {
+    categoryDeleteModal.style.display = 'none';
+}
 //</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="code for item transaction type">
+var transactionTypeForm = document.getElementById('transaction-form');
+var transactionTypeInput = document.querySelector('.category-item-input');
+
+transactionItemBttn.onclick = function() {
+    transactionModal.style.display = 'block';
+    console.log('clicked!');
+    
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = '?command=LIST_TRANSACTION_TYPE';
+    
+    xmlhttp.open('GET', url + param, true);
+    xmlhttp.onreadystatechange = function() {
+        if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            console.log('transaction type result', this.responseText);
+        }
+    }
+    
+    xmlhttp.send();
+}
+
+transactionTypeForm.onsubmit = function(event) {
+    event.preventDefault();
+    console.log('transaction type input', transactionTypeInput);
+    
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = 'command=ADD_TRANSACTION_TYPE&param=' + transactionTypeInput.value;
+    xmlhttp.open('POST', url, true);
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    
+    xmlhttp.onreadystatechange = function() {
+        if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            var transactionTypeName = this.responseText;
+            console.log('add result', transactionTypeName);
+            
+            var row = document.createElement('tr');
+            var cell = document.createElement('td');
+            cell.innerHTML = transactionTypeName;
+            row.appendChild(cell);
+            
+            transactionTableBody.appendChild(row);
+            transactionTableBody.value = '';
+            transactionTableBody.focus();
+        }
+    }
+    
+    xmlhttp.send(param);
+    
+}
+//</editor-fold>
+
 
 
 /*

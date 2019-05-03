@@ -36,6 +36,7 @@ import system.valueobject.ItemArchive;
 import system.valueobject.ItemLog;
 import system.valueobject.LogType;
 import system.valueobject.SystemLog;
+import system.valueobject.TransactionType;
 import system.valueobject.User;
 
 /**
@@ -99,14 +100,26 @@ public class SystemController extends HttpServlet {
                 case "ADD_BRAND":
                     addBrand(request, response);
                     break;
+                case "DELETE_BRAND":
+                    deleteBrand(request, response);
+                    break;
                 case "ADD_CATEGORY":
                     addCategory(request, response);
+                    break;
+                case "DELETE_CATEGORY":
+                    deleteCategory(request, response);
                     break;
                 case "LIST_BRAND":
                     listBrands(request, response);
                     break;
                 case "LIST_CATEGORY":
                     listCategories(request, response);
+                    break;
+                case "LIST_TRANSACTION_TYPE": 
+                    listTransactionType(request, response);
+                    break;
+                case "ADD_TRANSACTION_TYPE": 
+                    addTransactionType(request, response);
                     break;
                 case "LOGOUT":
                     logout(request, response);
@@ -401,4 +414,52 @@ public class SystemController extends HttpServlet {
         registerSystemLog(request, response, LogType.ADD_CATEGORY);
     }
 
+    private void deleteBrand(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception {
+         
+        String id = request.getParameter("id");
+        
+        dbUtil.deleteBrand(Integer.valueOf(id));
+        
+        response.setHeader("Content-Type","text/plain");
+        PrintWriter out = response.getWriter();
+        out.println(id);
+    }
+
+    private void deleteCategory(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
+        String id = request.getParameter("id");
+        
+        dbUtil.deleteCategory(Integer.valueOf(id));
+        
+        response.setHeader("Content-Type", "text/plain");
+        PrintWriter out = response.getWriter();
+        out.println(id);
+    }
+
+    private void listTransactionType(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
+        Gson gson = new Gson();
+        List<TransactionType> transactionTypes = dbUtil.listTransactionType();
+        
+        String result = gson.toJson(transactionTypes);
+        
+        PrintWriter out = response.getWriter();
+        out.println(result);
+        
+    }
+
+    private void addTransactionType(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
+        String param = request.getParameter("param");
+        String message = dbUtil.addTransactionType(param);
+        
+        response.setHeader("Content-Type", "text/plain");
+        PrintWriter out = response.getWriter();
+        out.println(message);
+    }
+    
 }

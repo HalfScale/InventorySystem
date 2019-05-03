@@ -35,6 +35,7 @@ import system.valueobject.ItemArchive;
 import system.valueobject.ItemLog;
 import system.valueobject.LogType;
 import system.valueobject.SystemLog;
+import system.valueobject.TransactionType;
 import system.valueobject.User;
 
 /**
@@ -104,6 +105,7 @@ public class DbUtil {
                 items.add(item);
             }
             
+            Console.log("items", items);
             return items;
             
         }finally {
@@ -711,6 +713,99 @@ public class DbUtil {
                 message = param;
             }
                     
+        }finally {
+            close(myConn, null, myStmt);
+        }
+        
+        return message;
+    }
+
+    public void deleteBrand(Integer id) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        
+        try {
+            myConn = datasource.getConnection();
+            String delete = "delete from brand where id = ?";
+            
+            myStmt = myConn.prepareStatement(delete);
+            myStmt.setInt(1, id);
+            myStmt.executeUpdate();
+            
+        }finally {
+            close(myConn, null, myStmt);
+        }
+    }
+
+    public void deleteCategory(Integer id) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+
+        try {
+            myConn = datasource.getConnection();
+            String delete = "delete from category where id = ?";
+
+            myStmt = myConn.prepareStatement(delete);
+            myStmt.setInt(1, id);
+            myStmt.executeUpdate();
+
+        } finally {
+            close(myConn, null, myStmt);
+        }
+    }
+
+    public List<TransactionType> listTransactionType() throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        
+        List<TransactionType> transactionTypes = new ArrayList<>();
+        
+        try {
+            myConn = datasource.getConnection();
+            String query = "select * from transaction_type";
+            
+            myStmt = myConn.prepareStatement(query);
+            myRs = myStmt.executeQuery();
+            
+            while(myRs.next()) {
+                int id = myRs.getInt("id");
+                String name = myRs.getString("name");
+                
+                TransactionType transactionType = new TransactionType();
+                transactionType.setId(id);
+                transactionType.setName(name);
+                
+                transactionTypes.add(transactionType);
+            }
+            
+        }finally {
+            close(myConn, myRs, myStmt);
+        }
+        
+        return transactionTypes;
+    }
+
+    public String addTransactionType(String param) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        
+        String message = "Transaction type insertion unsuccessful";
+        
+        try {
+            myConn = datasource.getConnection();
+            String insert = "insert into transaction_type(name) values (?)";
+            
+            myStmt = myConn.prepareStatement(insert);
+            myStmt.setString(1, param);
+            
+            int result = myStmt.executeUpdate();
+            
+            if(result == 1) {
+                message = param;
+            }
+            
+            Console.log("message", message);
         }finally {
             close(myConn, null, myStmt);
         }
