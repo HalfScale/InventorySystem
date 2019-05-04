@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -120,6 +121,9 @@ public class SystemController extends HttpServlet {
                     break;
                 case "ADD_TRANSACTION_TYPE": 
                     addTransactionType(request, response);
+                    break;
+                case "CHECKOUT": 
+                    checkoutItems(request, response);
                     break;
                 case "LOGOUT":
                     logout(request, response);
@@ -309,15 +313,19 @@ public class SystemController extends HttpServlet {
         throws Exception{
         
         String itemDetails = request.getParameter("param");
+        Console.log("checkout items", itemDetails);
         System.out.println("itemDetails " + itemDetails);
         
-        JsonArray items = new JsonParser().parse(itemDetails).getAsJsonArray();
-        dbUtil.checkOutItems(items);
+        JsonObject checkOutItems = new JsonParser().parse(itemDetails).getAsJsonObject();
+        String type = checkOutItems.get("type").getAsString();
+        JsonArray items = checkOutItems.get("checkoutItem[]").getAsJsonArray();
         
-        PrintWriter out = response.getWriter();
-        response.setHeader("Content-Type", "text/plain");
-        out.println("Checkout successful!");
-        registerSystemLog(request, response, LogType.CHECKOUT_ITEM);
+        dbUtil.checkOutItems(items, type);
+//        
+//        PrintWriter out = response.getWriter();
+//        response.setHeader("Content-Type", "text/plain");
+//        out.println("Checkout successful!");
+//        registerSystemLog(request, response, LogType.CHECKOUT_ITEM);
     }
 
     private void listLogTypes(HttpServletRequest request, HttpServletResponse response) 
@@ -455,7 +463,9 @@ public class SystemController extends HttpServlet {
         throws Exception{
         
         String param = request.getParameter("param");
+        Console.log("param", param);
         String message = dbUtil.addTransactionType(param);
+        Console.log("message", message);
         
         response.setHeader("Content-Type", "text/plain");
         PrintWriter out = response.getWriter();

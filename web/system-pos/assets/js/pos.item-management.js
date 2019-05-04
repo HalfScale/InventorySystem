@@ -14,11 +14,19 @@ var checkoutBttn = document.querySelector("#checkout-button");
 var checkoutCancelBttn = document.querySelector(".checkout-cancel");
 var checkoutConfirmBttn = document.querySelector(".checkout-confirm");
 
+var transactionTypeSelect = document.querySelector(".transaction-type-select");
+
 var currentItemMap;
 var itemTotalAmount = 0;
 //initialize checkout button
 checkoutBttn.setAttribute('title', 0);
 checkoutBttn.disabled = true;
+
+//<editor-fold defaultstate="collapsed" desc="code for checkout select box population">
+
+//</editor-fold>
+
+getTransactionTypes();
 
 setModalOkBttn.onclick = function() {
     var itemRow = itemTable.children;
@@ -66,7 +74,10 @@ setModalOkBttn.onclick = function() {
 setModalCancelBttn.onclick = function() {
     settingModal.style.display = 'none';
 };
-
+var checkoutMap = {
+    type: '',
+    'checkoutItem[]': []
+};
 var checkoutItem = [];
 checkoutBttn.onclick = function() {
     console.log('cart items', cartItems.children);
@@ -96,9 +107,13 @@ checkoutCancelBttn.onclick = function() {
 }
 
 checkoutConfirmBttn.onclick = function() {
+    checkoutMap['type'] = transactionTypeSelect.value;
+    checkoutMap['checkoutItem[]'] = checkoutItem;
     var xmlhttp = new XMLHttpRequest();
     var url = '/InventorySystem/SystemController';
-    var param = 'command=CHECKOUT' + '&param=' + JSON.stringify(checkoutItem);
+    console.log('checkout map', checkoutMap);
+    console.log('value', );
+    var param = 'command=CHECKOUT' + '&param=' + JSON.stringify(checkoutMap);
     xmlhttp.open('POST', url, true);
     xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     
@@ -106,7 +121,6 @@ checkoutConfirmBttn.onclick = function() {
         if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             console.log('items sold!');
             checkoutModal.style.display = 'none';
-            var cartItemList = cartItems.children;
             while(cartItems.firstChild) {
                 cartItems.removeChild(cartItems.firstChild);
             }
@@ -174,6 +188,30 @@ itemTable.addEventListener('click', function(event) {
     
     xmlhttp.send();
 });
+
+function getTransactionTypes() {
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = '?command=LIST_TRANSACTION_TYPE';
+    xmlhttp.open('GET', url + param, true);
+    
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            var transactionTypes = JSON.parse(this.responseText);
+            
+            transactionTypes.forEach(function(transaction) {
+                var option = document.createElement('option');
+                option.innerHTML = transaction.name;
+                option.value = transaction.id;
+                transactionTypeSelect.appendChild(option);
+            });
+        }
+        
+        console.log('trans type', transactionTypeSelect.value);
+    }
+    
+    xmlhttp.send();
+}
 
 function createCartItemBox(data) {
     var subTotal = data.cartQuantity * data.price;

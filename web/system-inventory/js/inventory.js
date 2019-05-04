@@ -744,12 +744,13 @@ categoryCancelBttn.onclick = function() {
 
 //<editor-fold defaultstate="collapsed" desc="code for item transaction type">
 var transactionTypeForm = document.getElementById('transaction-form');
-var transactionTypeInput = document.querySelector('.category-item-input');
+var transactionTypeInput = document.querySelector('.transaction-item-input');
 
 transactionItemBttn.onclick = function() {
     transactionModal.style.display = 'block';
     console.log('clicked!');
     
+    transactionTableBody.appendChild(createDummyRow('Loading'));
     var xmlhttp = new XMLHttpRequest();
     var url = '/InventorySystem/SystemController';
     var param = '?command=LIST_TRANSACTION_TYPE';
@@ -757,7 +758,23 @@ transactionItemBttn.onclick = function() {
     xmlhttp.open('GET', url + param, true);
     xmlhttp.onreadystatechange = function() {
         if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            removeElemChild(transactionTableBody);
             console.log('transaction type result', this.responseText);
+            var transactionTypes = JSON.parse(this.responseText);
+            
+            if(transactionTypes.length !== 0) {
+                transactionTypes.forEach(function(type) {
+                    var row = document.createElement('tr');
+                    var cell = document.createElement('td');
+                    cell.innerHTML = type.name;
+                    cell.dataset['transactionTypeId'] = type.id;
+                    row.appendChild(cell);
+                    transactionTableBody.appendChild(row);
+                });
+            }else {
+                transactionTableBody.appendChild(createDummyRow('No data found for Transaction Type'));
+            }
+            
         }
     }
     
@@ -766,7 +783,7 @@ transactionItemBttn.onclick = function() {
 
 transactionTypeForm.onsubmit = function(event) {
     event.preventDefault();
-    console.log('transaction type input', transactionTypeInput);
+    console.log('transaction type input', transactionTypeInput.value);
     
     var xmlhttp = new XMLHttpRequest();
     var url = '/InventorySystem/SystemController';
@@ -785,8 +802,8 @@ transactionTypeForm.onsubmit = function(event) {
             row.appendChild(cell);
             
             transactionTableBody.appendChild(row);
-            transactionTableBody.value = '';
-            transactionTableBody.focus();
+            transactionTypeInput.value = '';
+            transactionTypeInput.focus();
         }
     }
     
@@ -837,12 +854,14 @@ function findParentClassName(element, targetParent) {
     return null;
 }
 
-function createDummyRow(text, colspan) {
+function createDummyRow(text, center, colspan) {
     var dummyRow = document.createElement('tr');
     var dummyCell = document.createElement('td');
     dummyCell.setAttribute("colspan", colspan);
+    
     dummyCell.innerHTML = text;
     dummyRow.appendChild(dummyCell);
     
     return dummyRow;
 }
+

@@ -43,22 +43,6 @@
                 </div>
                 
                 <div id="cart-item-list">
-                    <!--<div class="cart-item-box">-->
-<!--                        <section>
-                            <span>Choi Nori Belt Japan</span>
-                            <span>CNBJ</span>
-                        </section>
-                        
-                        <section>
-                            <span>Php 1000</span>
-                            <span>Quantity: 10</span>
-                        </section>
-                        
-                        <section>
-                            <span>Total</span>
-                            <span> &times; </span>
-                        </section>
-                    </div>-->
                 </div>
                 
                 <div class="cart-buttons">
@@ -106,6 +90,12 @@
                     
                     <section>
                         <h3 class="checkout-total"></h3>
+                    </section>
+                    
+                    <section>
+                        <span>Type of transaction:</span>
+                        <select class="transaction-type-select">
+                        </select>
                     </section>
                     
                     <section>

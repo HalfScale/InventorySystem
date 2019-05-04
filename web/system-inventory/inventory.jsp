@@ -283,7 +283,7 @@
                     </div>
                     
                     <form id="transaction-form">
-                        <input class="category-item-input" pattern="^[^-\s][a-zA-Z0-9_\s-]+$" type="text" placeholder="Type the brand here...">
+                        <input class="transaction-item-input" pattern="^[^-\s][a-zA-Z0-9_\s-]+$" type="text" placeholder="Type the brand here...">
                         <input type="submit" value="Add Category">
                     </form>
                     

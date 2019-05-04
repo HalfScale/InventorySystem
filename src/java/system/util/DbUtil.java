@@ -394,7 +394,7 @@ public class DbUtil {
         return itemArchive;
     }
 
-    public void checkOutItems(JsonArray items) throws Exception{
+    public void checkOutItems(JsonArray items, String type) throws Exception{
         Connection myConn = null;
         PreparedStatement myStmt = null;
         PreparedStatement mySecondStmt = null;
@@ -403,7 +403,7 @@ public class DbUtil {
         
         try {
             myConn = datasource.getConnection();
-            String insertToTransac = "insert into transaction (total_amount, total_quantity, timestamp) values(?, ?, ?)";
+            String insertToTransac = "insert into transaction (type, total_amount, total_quantity, timestamp) values(?, ?, ?, ?)";
             myStmt = myConn.prepareStatement(insertToTransac, Statement.RETURN_GENERATED_KEYS);
             
             //Get the total quantity and total amount of all the items
@@ -417,9 +417,10 @@ public class DbUtil {
                 totalAmount = totalAmount.add(total);
             }
             
-            myStmt.setBigDecimal(1, totalAmount);
-            myStmt.setInt(2, totalQuantity);
-            myStmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+            myStmt.setString(1, type);
+            myStmt.setBigDecimal(2, totalAmount);
+            myStmt.setInt(3, totalQuantity);
+            myStmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
             
             //We need to get the id of the last inserted row
             //in the transaction table to use it on another table
