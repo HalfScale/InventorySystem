@@ -11,7 +11,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link type="text/css" rel="stylesheet" href="css/style.css">
+        <link type="text/css" rel="stylesheet" href="assets/css/style.css">
         <title>Inventory</title>
     </head>
     
@@ -340,8 +340,27 @@
                     </div>
                 </div>
             </div>
+            
+            <div id="transaction-delete-modal" class="standard-modal">
+                <div class="transaction-modal-content">
+                    <!--header-->
+                    <div class="standard-header">
+                    </div>
+
+                    <div class="transaction-modal-body">
+                        <section class="standard-section">
+                            <span class="transaction-modal-text standard-span"></span>
+                        </section>
+
+                        <section class="standard-section">
+                            <button class="transaction-confirm-button">Confirm</button>
+                            <button class="transaction-cancel-button">Cancel</button>
+                        </section>
+                    </div>
+                </div>
+            </div>
         </div>
      
-    <script src="js/inventory.js"></script>
+    <script src="assets/js/inventory.js"></script>
     </body>
 </html>

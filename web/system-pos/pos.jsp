@@ -10,8 +10,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link type="text/css" rel="stylesheet" href="assets/css/pos.main.css">
-        <link type="text/css" rel="stylesheet" href="../css/util.css">
+        <link type="text/css" rel="stylesheet" href="assets/css/main.css">
         <title>POS</title>
     </head>
     <body>
@@ -107,7 +106,7 @@
             </div>
         </div>
         
-        <script src="assets/js/pos.item-table.js"></script>
-        <script src="assets/js/pos.item-management.js"></script>
+        <script src="assets/js/item-table.js"></script>
+        <script src="assets/js/item-management.js"></script>
     </body>
 </html>

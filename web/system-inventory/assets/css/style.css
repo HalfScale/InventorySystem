@@ -45,7 +45,7 @@ th {
     padding: 5px;
 }
 
-tbody tr:hover {
+#item-table tr:hover {
     background-color: #be2213;
     color: #ffffff;
     cursor: pointer;
@@ -187,6 +187,12 @@ div.scrollable-table{
 
 #brand-table, #category-table, #transaction-table{
     width: 100%;
+}
+
+#brand-table tr:hover, #category-table tr:hover, #transaction-table tr:hover{
+    background-color: #be2213;
+    color: #ffffff;
+    cursor: pointer;
 }
 
 .item-brand-div, .item-category-div, .item-transaction-div{

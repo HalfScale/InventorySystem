@@ -65,6 +65,7 @@ public class SystemController extends HttpServlet {
             throws ServletException, IOException {
         
         String command = request.getParameter("command");
+        Console.log("command", command);
 
         command = command != null ? command : "LIST";
         System.out.println("Param doGet " + command);
@@ -121,6 +122,9 @@ public class SystemController extends HttpServlet {
                     break;
                 case "ADD_TRANSACTION_TYPE": 
                     addTransactionType(request, response);
+                    break;
+                case "DELETE_TRANSACTION_TYPE": 
+                    deleteTransactionType(request, response);
                     break;
                 case "CHECKOUT": 
                     checkoutItems(request, response);
@@ -470,6 +474,20 @@ public class SystemController extends HttpServlet {
         response.setHeader("Content-Type", "text/plain");
         PrintWriter out = response.getWriter();
         out.println(message);
+    }
+
+    private void deleteTransactionType(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
+        String id = request.getParameter("id");
+        
+        dbUtil.deleteTransactionType(Integer.parseInt(id));
+        
+        Console.log("Transaction type delete successful!");
+        
+        response.setHeader("Content-Type", "text/plain");
+        PrintWriter out = response.getWriter();
+        out.println(id);
     }
     
 }

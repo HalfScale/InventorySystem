@@ -745,6 +745,11 @@ categoryCancelBttn.onclick = function() {
 //<editor-fold defaultstate="collapsed" desc="code for item transaction type">
 var transactionTypeForm = document.getElementById('transaction-form');
 var transactionTypeInput = document.querySelector('.transaction-item-input');
+var transactionRowParent = document.querySelector('.item-transaction-tbody');
+var transactionDeleteModal = document.querySelector('#transaction-delete-modal');
+var transactionConfirmBttn = document.querySelector('.transaction-confirm-button');
+var transactionCancelBttn = document.querySelector('.transaction-cancel-button');
+var transactionTypeModalTxt = document.querySelector('.transaction-modal-text');
 
 transactionItemBttn.onclick = function() {
     transactionModal.style.display = 'block';
@@ -765,9 +770,9 @@ transactionItemBttn.onclick = function() {
             if(transactionTypes.length !== 0) {
                 transactionTypes.forEach(function(type) {
                     var row = document.createElement('tr');
+                    row.dataset['transactionTypeId'] = type.id
                     var cell = document.createElement('td');
                     cell.innerHTML = type.name;
-                    cell.dataset['transactionTypeId'] = type.id;
                     row.appendChild(cell);
                     transactionTableBody.appendChild(row);
                 });
@@ -809,6 +814,40 @@ transactionTypeForm.onsubmit = function(event) {
     
     xmlhttp.send(param);
     
+}
+var transactionTypeTable = document.getElementById('transaction-table');
+transactionConfirmBttn.onclick = function() {
+    var xmlhttp = new XMLHttpRequest();
+    var url = '/InventorySystem/SystemController';
+    var param = '?command=DELETE_TRANSACTION_TYPE&id=' + selectedTransactionTypeId;
+    xmlhttp.open('GET', url + param, true);
+    
+    xmlhttp.onreadystatechange = function() {
+        if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            var targetId = parseFloat(this.responseText);
+            
+            for (var i = 0, row; row = transactionTypeTable.rows[i]; i++) {
+                if(row.dataset['transactionTypeId'] == targetId) {
+                    row.parentNode.removeChild(row);
+                    transactionCancelBttn.click();
+                }
+            }
+        }
+    }
+    
+    xmlhttp.send();
+}
+
+var selectedTransactionTypeId;
+transactionRowParent.onclick = function(event) {
+    transactionDeleteModal.style.display = 'block';
+    transactionTypeModalTxt.innerHTML = 'Delete ' + '"' + event.target.innerHTML + '"' + ' ?';
+    console.log('id', event.target.parentNode.dataset['transactionTypeId']);
+    selectedTransactionTypeId = event.target.parentNode.dataset['transactionTypeId'];
+}
+
+transactionCancelBttn.onclick = function() {
+    transactionDeleteModal.style.display = 'none';
 }
 //</editor-fold>
 

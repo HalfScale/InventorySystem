@@ -813,5 +813,23 @@ public class DbUtil {
         
         return message;
     }
+
+    public void deleteTransactionType(int id) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        
+        try {
+            
+            myConn = datasource.getConnection();
+            String delete = "delete from transaction_type where id = ?";
+            
+            myStmt = myConn.prepareStatement(delete);
+            myStmt.setInt(1, id);
+            myStmt.executeUpdate();
+        
+        }finally {
+            close(myConn, null, myStmt);
+        }
+    }
     
 }
