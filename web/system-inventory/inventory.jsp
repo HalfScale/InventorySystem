@@ -11,7 +11,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link type="text/css" rel="stylesheet" href="css/style.css">
+        <link type="text/css" rel="stylesheet" href="assets/css/style.css">
         <title>Inventory</title>
     </head>
     
@@ -24,8 +24,9 @@
         <div class="top-nav">
             <span id="archive-item-span" class="item-span">Archive</span>
             <span id="add-item-span" class="item-span">Add Item</span>
-            <span id="categories-item-span" class="item-span">Categories</span>
+            <span id="categories-item-span" class="item-span">Category</span>
             <span id="brand-item-span" class="item-span">Brand</span>
+            <span id="transaction-item-span" class="item-span">Transaction Type</span>
         </div>
         
         <input id="item-search-bar" type="text" placeholder="Search for item...">
@@ -273,8 +274,93 @@
 
                 </div>
             </div>
+            
+            <div class="form-modal-container transaction-item-modal">
+                <div class="item-transaction-div">
+
+                    <div class="form-header">
+                        <span class="close transaction-modal-close"> &times;</span>
+                    </div>
+                    
+                    <form id="transaction-form">
+                        <input class="transaction-item-input" pattern="^[^-\s][a-zA-Z0-9_\s-]+$" type="text" placeholder="Type the brand here...">
+                        <input type="submit" value="Add Category">
+                    </form>
+                    
+                    <div class="scrollable-table">
+                        <table id="transaction-table">
+                            <thead>
+                                <tr>
+                                    <th colspan="1">Transaction Type</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="item-transaction-tbody">
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            
+            <div id="brand-delete-modal" class="standard-modal">
+                <div class="brand-modal-content">
+                    <!--header-->
+                    <div class="standard-header">
+                    </div>
+                    
+                    <div class="brand-modal-body">
+                        <section class="standard-section">
+                            <span class="brand-modal-text standard-span"></span>
+                        </section>
+                        
+                        <section class="standard-section">
+                            <button class="brand-confirm-button">Confirm</button>
+                            <button class="brand-cancel-button">Cancel</button>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="category-delete-modal" class="standard-modal">
+                <div class="category-modal-content">
+                    <!--header-->
+                    <div class="standard-header">
+                    </div>
+                    
+                    <div class="category-modal-body">
+                        <section class="standard-section">
+                            <span class="category-modal-text standard-span"></span>
+                        </section>
+                        
+                        <section class="standard-section">
+                            <button class="category-confirm-button">Confirm</button>
+                            <button class="category-cancel-button">Cancel</button>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="transaction-delete-modal" class="standard-modal">
+                <div class="transaction-modal-content">
+                    <!--header-->
+                    <div class="standard-header">
+                    </div>
+
+                    <div class="transaction-modal-body">
+                        <section class="standard-section">
+                            <span class="transaction-modal-text standard-span"></span>
+                        </section>
+
+                        <section class="standard-section">
+                            <button class="transaction-confirm-button">Confirm</button>
+                            <button class="transaction-cancel-button">Cancel</button>
+                        </section>
+                    </div>
+                </div>
+            </div>
         </div>
      
-    <script src="js/inventory.js"></script>
+    <script src="assets/js/inventory.js"></script>
     </body>
 </html>

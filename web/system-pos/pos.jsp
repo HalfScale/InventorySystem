@@ -10,8 +10,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link type="text/css" rel="stylesheet" href="assets/css/pos.main.css">
-        <link type="text/css" rel="stylesheet" href="../css/util.css">
+        <link type="text/css" rel="stylesheet" href="assets/css/main.css">
         <title>POS</title>
     </head>
     <body>
@@ -43,22 +42,6 @@
                 </div>
                 
                 <div id="cart-item-list">
-                    <!--<div class="cart-item-box">-->
-<!--                        <section>
-                            <span>Choi Nori Belt Japan</span>
-                            <span>CNBJ</span>
-                        </section>
-                        
-                        <section>
-                            <span>Php 1000</span>
-                            <span>Quantity: 10</span>
-                        </section>
-                        
-                        <section>
-                            <span>Total</span>
-                            <span> &times; </span>
-                        </section>
-                    </div>-->
                 </div>
                 
                 <div class="cart-buttons">
@@ -85,7 +68,7 @@
                     </section>
                     
                     <section>
-                        <button class="pos-modal-ok-button">Ok</button>
+                        <button class="pos-modal-ok-button">Confirm</button>
                         <button class="pos-modal-cancel-button">Cancel</button>
                     </section>
                 </div>
@@ -109,6 +92,12 @@
                     </section>
                     
                     <section>
+                        <span>Type of transaction:</span>
+                        <select class="transaction-type-select">
+                        </select>
+                    </section>
+                    
+                    <section>
                         <button class="checkout-confirm">CHECKOUT</button>
                         <button class="checkout-cancel">CANCEL</button>
                     </section>
@@ -117,7 +106,7 @@
             </div>
         </div>
         
-        <script src="assets/js/pos.item-table.js"></script>
-        <script src="assets/js/pos.item-management.js"></script>
+        <script src="assets/js/item-table.js"></script>
+        <script src="assets/js/item-management.js"></script>
     </body>
 </html>

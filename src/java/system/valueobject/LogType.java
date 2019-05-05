@@ -16,6 +16,8 @@ public class LogType {
     public static final int DELETE_ITEM = 4;
     public static final int UPDATE_ITEM = 5;
     public static final int CHECKOUT_ITEM = 6;
+    public static final int ADD_BRAND = 7;
+    public static final int ADD_CATEGORY = 8;
     
     private int id = -1;
     private String type = "";

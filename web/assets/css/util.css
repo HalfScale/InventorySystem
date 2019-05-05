@@ -1,0 +1,22 @@
+.clicky{
+    cursor: pointer;
+}
+
+/*FLEX UTILS*/  
+.flex-horizontal{
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-vertical{
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-item-center{
+    margin: auto;
+}
+
+.justify-space-between{
+    justify-content: space-between;
+}
