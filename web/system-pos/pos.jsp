@@ -17,6 +17,9 @@
         <div id="view-content">
             <!--table here-->
             <div id="pos-table-div">
+                <div class="pos-header flex-horizontal clicky">
+                    <span class="pos-transaction-bttn">Transactions</span>
+                </div>
             <input id="item-search-bar" type="text" placeholder="Search for item...">
                 <table id="pos-table">
                     <thead>
@@ -82,6 +85,7 @@
                 
                 <div class="pos-modal-header">
                 </div>
+                
                 <div class="checkout-modal-body">
                     <section>
                         <span>TOTAL OVERVIEW</span>
@@ -106,7 +110,35 @@
             </div>
         </div>
         
+        <div id="pos-transaction-modal" class="standard-modal">
+            <div class="standard-table-div">
+
+                <div class="standard-div-header flex-horizontal justify-space-between">
+                    <span class="white-text-bold">TRANSACTIONS</span>
+                    <span class="close-bttn transaction-modal-close"> &times;</span>
+                </div>
+
+                <div class="scrollable-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Transaction Type</th>
+                                <th>Total Amount</th>
+                                <th>Total Quantity</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        
         <script src="assets/js/item-table.js"></script>
         <script src="assets/js/item-management.js"></script>
+        <script src="assets/js/transaction.js"></script>
     </body>
 </html>

@@ -11,8 +11,9 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
-        <link type="text/css" rel="stylesheet" href="../assets/css/general.css">
+        <link type="text/css" rel="stylesheet" href="../assets/css/side-nav.css">
         <link type="text/css" rel="stylesheet" href="../assets/css/util.css">
+        <link type="text/css" rel="stylesheet" href="../assets/css/general.css">
         <script src="../assets/js/util.js"></script>
     </head>
     

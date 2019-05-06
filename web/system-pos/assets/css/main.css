@@ -132,3 +132,13 @@ tbody tr:hover {
     margin: 10px auto;
     padding: 5px;
 }
+
+.pos-header{
+    padding: 5px;
+    background-color: #be2213;
+    color: #7b8494;
+}
+
+.pos-header span:hover{
+    color: #fff;
+}
