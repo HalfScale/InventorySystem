@@ -117,6 +117,9 @@ public class SystemController extends HttpServlet {
                 case "LIST_CATEGORY":
                     listCategories(request, response);
                     break;
+                case "LIST_TRANSACTIONS":
+                    listTransaction(request, response);
+                    break;
                 case "LIST_TRANSACTION_TYPE": 
                     listTransactionType(request, response);
                     break;
@@ -488,6 +491,11 @@ public class SystemController extends HttpServlet {
         response.setHeader("Content-Type", "text/plain");
         PrintWriter out = response.getWriter();
         out.println(id);
+    }
+
+    private void listTransaction(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
     }
     
 }

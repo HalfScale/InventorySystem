@@ -20,3 +20,17 @@
 .justify-space-between{
     justify-content: space-between;
 }
+
+.justify-flex-end{
+    justify-content: flex-end;
+}
+
+/*TEXT UTILS*/
+.white-text{
+    color: #ffffff;
+}
+
+.white-text-bold{
+    color: #ffffff;
+    font-weight: bold;
+}
