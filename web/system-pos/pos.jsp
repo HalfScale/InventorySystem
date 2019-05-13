@@ -129,7 +129,37 @@
                             </tr>
                         </thead>
 
-                        <tbody>
+                        <tbody class="white-bg text-center">
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        
+        <div id="pos-transaction-detail-modal" class="standard-modal">
+            <div class="standard-table-div">
+
+                <div class="standard-div-header flex-horizontal justify-space-between">
+                    <span class="white-text-bold">TRANSACTION DETAIL</span>
+                    <span class="close-bttn transaction-detail-modal-close"> &times;</span>
+                </div>
+
+                <div class="scrollable-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Brand</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Reseller Price</th>
+                                <th>Quantity</th>
+                                <th>Total Amount</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="white-bg text-center">
                         </tbody>
                     </table>
                 </div>

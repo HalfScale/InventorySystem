@@ -37,6 +37,8 @@ import system.valueobject.ItemArchive;
 import system.valueobject.ItemLog;
 import system.valueobject.LogType;
 import system.valueobject.SystemLog;
+import system.valueobject.Transaction;
+import system.valueobject.TransactionDetail;
 import system.valueobject.TransactionType;
 import system.valueobject.User;
 
@@ -128,6 +130,9 @@ public class SystemController extends HttpServlet {
                     break;
                 case "DELETE_TRANSACTION_TYPE": 
                     deleteTransactionType(request, response);
+                    break;
+                case "TRANSACTION_DETAILS_BY_ID": 
+                    listTransactionDetailsById(request, response);
                     break;
                 case "CHECKOUT": 
                     checkoutItems(request, response);
@@ -496,6 +501,29 @@ public class SystemController extends HttpServlet {
     private void listTransaction(HttpServletRequest request, HttpServletResponse response) 
         throws Exception{
         
+        Gson gson = new Gson();
+        List<Transaction> transactions = dbUtil.getAllTransactions();
+        
+        String result = gson.toJson(transactions);
+        
+        response.setHeader("Content-Type", "text/plain");
+        PrintWriter out = response.getWriter();
+        out.println(result);
+    }
+
+    private void listTransactionDetailsById(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
+        String id = request.getParameter("id");
+        
+        Gson gson = new Gson();
+        List<TransactionDetail> transactionDetail = dbUtil.getTransactionDetailByTransactionId(Integer.parseInt(id));
+        
+        String result = gson.toJson(transactionDetail);
+        Console.log("result transaciton details", result);
+        response.setHeader("Content-Type", "application/json");
+        PrintWriter out = response.getWriter();
+        out.println(result);
     }
     
 }

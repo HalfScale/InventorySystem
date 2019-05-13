@@ -34,3 +34,11 @@
     color: #ffffff;
     font-weight: bold;
 }
+
+.text-center{
+    text-align: center; 
+}
+/*COLOR UTILS*/
+.white-bg{
+    background-color: #ffffff;
+}

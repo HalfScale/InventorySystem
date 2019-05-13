@@ -35,6 +35,8 @@ import system.valueobject.ItemArchive;
 import system.valueobject.ItemLog;
 import system.valueobject.LogType;
 import system.valueobject.SystemLog;
+import system.valueobject.Transaction;
+import system.valueobject.TransactionDetail;
 import system.valueobject.TransactionType;
 import system.valueobject.User;
 
@@ -54,10 +56,10 @@ public class DbUtil {
         Connection myConn = null;
         PreparedStatement myStmt = null;
         ResultSet myRs = null;
-        List<Item> items;
+        List<Item> items = new ArrayList<>();
         
         try {
-            items = new ArrayList<>();
+            
             myConn = datasource.getConnection();
             String query = "select i.id, i.name, i.code, i.description, i.price, i.reseller_price,  "
                     + "i.stock, b.id as brand_id, b.name as brand_name, c.id as category_id, c.name as category_name from item i "
@@ -111,6 +113,51 @@ public class DbUtil {
         }finally {
             close(myConn, myRs, myStmt);
         }
+    }
+    
+    public Item getItemById(int targetId) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        Item item = new Item();
+        try {
+            myConn = datasource.getConnection();
+            String query = "select * from item where id = ?";
+            myStmt = myConn.prepareStatement(query);
+            myStmt.setInt(1, targetId);
+            myRs = myStmt.executeQuery();
+            
+            if(myRs.next()) {
+                int id = myRs.getInt("id");
+                String name = myRs.getString("name");
+                String code = myRs.getString("code");
+                int brandId = myRs.getInt("brand");
+                int categoryId = myRs.getInt("category");
+                String description = myRs.getString("description");
+                BigDecimal price = myRs.getBigDecimal("price");
+                BigDecimal resellerPrice = myRs.getBigDecimal("reseller_price");
+                int stock = myRs.getInt("stock");
+                
+                Brand brand = getBrandById(brandId);
+                Category category = getCategoryById(categoryId);
+                
+                item.setId(id);
+                item.setName(name);
+                item.setCode(code);
+                item.setBrand(brand);
+                item.setCategory(category);
+                item.setDescription(description);
+                item.setPrice(price);
+                item.setResellerPrice(resellerPrice);
+                item.setStock(stock);
+                
+            }
+            
+        }finally {
+            close(myConn, myRs, myStmt);
+        }
+        
+        return item;
     }
     
     public void addItem(Item item) throws Exception{
@@ -565,13 +612,6 @@ public class DbUtil {
                 
                 systemLogs.add(logMap);
                 
-//                SystemLog systemLog = new SystemLog();
-//                systemLog.setId(id);
-//                systemLog.setLogType(logType);
-//                systemLog.setTimestamp(timestamp);
-//                systemLog.setUserId(userId);
-//                
-                
             }
             
         }finally {
@@ -666,6 +706,34 @@ public class DbUtil {
         
         return brands;
     }
+    
+    public Brand getBrandById(int targetId) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        Brand brand = new Brand();
+        
+        try {
+            myConn = datasource.getConnection();
+            String query = "select * from brand where id = ?";
+            myStmt = myConn.prepareStatement(query);
+            myStmt.setInt(1, targetId);
+            myRs = myStmt.executeQuery();
+            
+            if(myRs.next()) {
+                int id = myRs.getInt("id");
+                String name = myRs.getString("name");
+                
+                brand.setId(id);
+                brand.setName(name);
+            }
+            
+        }finally {
+            close(myConn, myRs, myStmt);
+        }
+        
+        return brand;
+    }
 
     public List<Category> listCategory() throws Exception{
         Connection myConn = null;
@@ -719,6 +787,34 @@ public class DbUtil {
         }
         
         return message;
+    }
+    
+    public Category getCategoryById(int targetId) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        Category category = new Category();
+        
+        try {
+            myConn = datasource.getConnection();
+            String query = "select * from category where id = ?";
+            myStmt = myConn.prepareStatement(query);
+            myStmt.setInt(1, targetId);
+            myRs = myStmt.executeQuery();
+            
+            if(myRs.next()) {
+                int id  = myRs.getInt("id");
+                String name = myRs.getString("name");
+                
+                category.setId(id);
+                category.setName(name);
+            }
+            
+        }finally {
+            close(myConn, myRs, myStmt);
+        }
+        
+        return category;
     }
 
     public void deleteBrand(Integer id) throws Exception{
@@ -830,6 +926,161 @@ public class DbUtil {
         }finally {
             close(myConn, null, myStmt);
         }
+    }
+    
+    public TransactionType getTransactionTypeById(int targetId) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        TransactionType transactionType = null;
+        
+        try {
+            myConn = datasource.getConnection();
+            String query = "select * from transaction_type where id = ?";
+            myStmt = myConn.prepareStatement(query);
+            myStmt.setInt(1, targetId);
+            myRs = myStmt.executeQuery();
+            
+            if(myRs.next()) {
+                transactionType = new TransactionType();
+                
+                int id = myRs.getInt("id");
+                String name = myRs.getString("name");
+                
+                transactionType.setId(id);
+                transactionType.setName(name);
+            }
+
+        } finally {
+            close(myConn, myRs, myStmt);
+        }
+        
+        return transactionType;
+    }
+    
+    public Transaction getTransactionById(int targetId) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        Transaction transaction = null;
+        try {
+            myConn = datasource.getConnection();
+            String query = "select * from transaction where id = ?";
+            myStmt = myConn.prepareStatement(query);
+            myStmt.setInt(1, targetId);
+            myRs = myStmt.executeQuery();
+            
+            if(myRs.next()) {
+                transaction = new Transaction();
+                
+                int id = myRs.getInt("id");
+                int transactionTypeId = myRs.getInt("type");
+                BigDecimal totalAmount = myRs.getBigDecimal("total_amount");
+                int totalQuantity = myRs.getInt("total_quantity");
+                Timestamp timestamp = myRs.getTimestamp("timestamp");
+                
+                TransactionType transactionType = getTransactionTypeById(transactionTypeId);
+                
+                transaction.setId(id);
+                transaction.setType(transactionType);
+                transaction.setTotalAmount(totalAmount);
+                transaction.setTotalQuantity(totalQuantity);
+                transaction.setTimestamp(timestamp);
+            }
+            
+        }finally {
+            close(myConn, myRs, myStmt);
+        }
+        
+        return transaction;
+    }
+
+    public List<Transaction> getAllTransactions() throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        List<Transaction> transactions = new ArrayList<>();
+        try {
+            myConn = datasource.getConnection();
+            String query = "select t.id, t.type, t.total_amount, t.total_quantity\n"
+                    + ", t.timestamp, tt.id as transaction_type_id, tt.name as transaction_type_name from transaction t \n"
+                    + "inner join transaction_type tt\n"
+                    + "on t.type = tt.id";
+            
+            myStmt = myConn.prepareStatement(query);
+            myRs = myStmt.executeQuery();
+            
+            while(myRs.next()) {
+                int transactionId = myRs.getInt("id");
+                BigDecimal totalAmounht = myRs.getBigDecimal("total_amount");
+                int quantity = myRs.getInt("total_quantity");
+                Timestamp timestamp = myRs.getTimestamp("timestamp");
+                
+                int transactionTypeId = myRs.getInt("transaction_type_id");
+                String transactionTypeName = myRs.getString("transaction_type_name");
+                
+                Transaction transaction = new Transaction();
+                transaction.setId(transactionId);
+                transaction.setTotalAmount(totalAmounht);
+                transaction.setTotalQuantity(quantity);
+                transaction.setTimestamp(timestamp);
+                
+                TransactionType transactionType = new TransactionType();
+                transactionType.setId(transactionTypeId);
+                transactionType.setName(transactionTypeName);
+                
+                transaction.setType(transactionType);
+                
+                transactions.add(transaction);
+            }
+            
+        }finally{
+            close(myConn, myRs, myStmt);
+        }
+        
+        return transactions;
+    }
+    
+    public List<TransactionDetail> getTransactionDetailByTransactionId(int targetId) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        List<TransactionDetail> transactionDetails = new ArrayList<>();
+        
+        try {
+            myConn = datasource.getConnection();
+            String query = "select * from transaction_detail where transaction_id = ?";
+            myStmt = myConn.prepareStatement(query);
+            myStmt.setInt(1, targetId);
+            
+            myRs = myStmt.executeQuery();
+            
+            while(myRs.next()) {
+                TransactionDetail transactionDetail = new TransactionDetail();
+                
+                int id = myRs.getInt("id");
+                int transactionId = myRs.getInt("transaction_id");
+                int itemId = myRs.getInt("item_id");
+                int quantity = myRs.getInt("quantity");
+                BigDecimal totalAmount = myRs.getBigDecimal("total_amount");
+                
+                Item item = getItemById(itemId);
+                Transaction transaction = getTransactionById(transactionId);
+                
+                transactionDetail.setId(id);
+                transactionDetail.setTransaction(transaction);
+                transactionDetail.setItem(item);
+                transactionDetail.setQuantity(quantity);
+                transactionDetail.setTotalAmount(totalAmount);
+                
+                transactionDetails.add(transactionDetail);
+            }
+            
+        }finally {
+            close(myConn, myRs, myStmt);
+        }
+        
+        return transactionDetails;
     }
     
 }
