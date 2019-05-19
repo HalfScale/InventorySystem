@@ -71,6 +71,14 @@
                     </section>
                     
                     <section>
+                        <span>Price Type:</span>
+                        <select class="pos-modal-price-type">
+                            <option value="original">Original Price</option>
+                            <option value="reseller">Reseller Price</option>
+                        </select>
+                    </section>
+                    
+                    <section>
                         <button class="pos-modal-ok-button">Confirm</button>
                         <button class="pos-modal-cancel-button">Cancel</button>
                     </section>

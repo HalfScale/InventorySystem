@@ -24,7 +24,7 @@ xmlhttp.onreadystatechange = function() {
         result.forEach(function(log) {
            var option = document.createElement('option');
 
-           option.innerHTML = capitalize(log.type).replace('-', ' ');
+           option.innerHTML = capitalize(log.type).replace(/-/g, ' ');
            option.value = log.id;
 
            logTypeSelect.appendChild(option);
@@ -81,7 +81,7 @@ xmlhttp.onreadystatechange = function() {
             row.appendChild(userTd);
             
             var logTd = document.createElement('td');
-            logTd.innerHTML = capitalize(log.type).replace('-', ' ');
+            logTd.innerHTML = capitalize(log.type).replace(/-/g, ' ');
             row.appendChild(logTd);
             
             var timestampTd = document.createElement('td');

@@ -334,10 +334,10 @@ public class SystemController extends HttpServlet {
         
         dbUtil.checkOutItems(items, type);
 //        
-//        PrintWriter out = response.getWriter();
-//        response.setHeader("Content-Type", "text/plain");
-//        out.println("Checkout successful!");
-//        registerSystemLog(request, response, LogType.CHECKOUT_ITEM);
+        PrintWriter out = response.getWriter();
+        response.setHeader("Content-Type", "text/plain");
+        out.println("Checkout successful!");
+        registerSystemLog(request, response, LogType.CHECKOUT_ITEM);
     }
 
     private void listLogTypes(HttpServletRequest request, HttpServletResponse response) 
@@ -444,6 +444,8 @@ public class SystemController extends HttpServlet {
         response.setHeader("Content-Type","text/plain");
         PrintWriter out = response.getWriter();
         out.println(id);
+        
+        registerSystemLog(request, response, LogType.DELETE_BRAND);
     }
 
     private void deleteCategory(HttpServletRequest request, HttpServletResponse response) 
@@ -456,6 +458,8 @@ public class SystemController extends HttpServlet {
         response.setHeader("Content-Type", "text/plain");
         PrintWriter out = response.getWriter();
         out.println(id);
+        
+        registerSystemLog(request, response, LogType.DELETE_CATEGORY);
     }
 
     private void listTransactionType(HttpServletRequest request, HttpServletResponse response) 
@@ -482,6 +486,8 @@ public class SystemController extends HttpServlet {
         response.setHeader("Content-Type", "text/plain");
         PrintWriter out = response.getWriter();
         out.println(message);
+        
+        registerSystemLog(request, response, LogType.ADD_TRANSACTION_TYPE);
     }
 
     private void deleteTransactionType(HttpServletRequest request, HttpServletResponse response) 
@@ -496,6 +502,8 @@ public class SystemController extends HttpServlet {
         response.setHeader("Content-Type", "text/plain");
         PrintWriter out = response.getWriter();
         out.println(id);
+        
+        registerSystemLog(request, response, LogType.DELETE_TRANSACTION_TYPE);
     }
 
     private void listTransaction(HttpServletRequest request, HttpServletResponse response) 

@@ -82,14 +82,17 @@ public class SystemLogin extends HttpServlet {
             }
             //then check if its a valid user
         }catch(ServletException e) {
+            e.printStackTrace();
             result.put("status", 1);
             result.put("message", e.getMessage());
             
         }catch(SQLException e) {
+            e.printStackTrace();
             result.put("status", 1);
             result.put("message", e.getMessage());
             
         }catch(Exception e) {
+            e.printStackTrace();
             result.put("status", 1);
             result.put("message", e.getMessage());
         

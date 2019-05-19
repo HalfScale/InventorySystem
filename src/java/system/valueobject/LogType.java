@@ -17,7 +17,11 @@ public class LogType {
     public static final int UPDATE_ITEM = 5;
     public static final int CHECKOUT_ITEM = 6;
     public static final int ADD_BRAND = 7;
-    public static final int ADD_CATEGORY = 8;
+    public static final int DELETE_BRAND = 8;
+    public static final int ADD_CATEGORY = 9;
+    public static final int DELETE_CATEGORY = 10;
+    public static final int ADD_TRANSACTION_TYPE = 11;
+    public static final int DELETE_TRANSACTION_TYPE = 12;
     
     private int id = -1;
     private String type = "";

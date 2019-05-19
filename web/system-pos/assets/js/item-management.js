@@ -9,6 +9,7 @@ var checkoutModal = document.querySelector("#checkout-modal");
 
 var modalQtyInput = document.querySelector('.pos-modal-setting-input');
 var cartItems = document.querySelector('#cart-item-list');
+var modalTypeInput = document.querySelector('.pos-modal-price-type');
 
 var checkoutBttn = document.querySelector("#checkout-button");
 var checkoutCancelBttn = document.querySelector(".checkout-cancel");
@@ -21,10 +22,6 @@ var itemTotalAmount = 0;
 //initialize checkout button
 checkoutBttn.setAttribute('title', 0);
 checkoutBttn.disabled = true;
-
-//<editor-fold defaultstate="collapsed" desc="code for checkout select box population">
-
-//</editor-fold>
 
 getTransactionTypes();
 
@@ -214,7 +211,16 @@ function getTransactionTypes() {
 }
 
 function createCartItemBox(data) {
-    var subTotal = data.cartQuantity * data.price;
+    var price;
+    
+    if (modalTypeInput.value === 'original') {
+        console.log('select input', modalTypeInput.value);
+        price = data.price;
+    }else {
+        price = data.resellerPrice;
+    }
+    
+    var subTotal = data.cartQuantity * price;
     var container = document.createElement('div');
     container.className += ' cart-item-box';
     container.dataset['itemId'] = data.id;
@@ -233,7 +239,7 @@ function createCartItemBox(data) {
     itemCode.innerHTML = data.code;
     itemCode.className += 'item-code';
     var itemPrice = document.createElement('span');
-    itemPrice.innerHTML = 'Price: &#8369; ' + toTwoDecimal(data.price);
+    itemPrice.innerHTML = 'Price: &#8369; ' + toTwoDecimal(price);
     itemPrice.className += 'item-price';
     var itemQuantity = document.createElement('span');
     itemQuantity.innerHTML = 'Qty: ' + data.cartQuantity;

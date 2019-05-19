@@ -535,7 +535,7 @@ public class DbUtil {
                 
             }
             
-            System.out.println("Updating the items successful!");
+            Console.log("Updating the items successful!");
         
         }finally {
             close(myConn, myRs, myStmt, mySecondStmt);
@@ -628,9 +628,9 @@ public class DbUtil {
         Calendar calendar = Calendar.getInstance(new Locale("PH"));
         
         if(user != null) {
-            System.out.println("User " + user.getName());
+            Console.log("User", user.getName());
         }else {
-            System.out.println("User is null");
+            Console.log("User is null");
         }
         
         try {
