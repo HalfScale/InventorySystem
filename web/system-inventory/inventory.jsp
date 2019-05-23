@@ -359,6 +359,23 @@
                     </div>
                 </div>
             </div>
+            
+            <div id="response-dialog" class="standard-modal">
+                <div class="response-dialog-content">
+                    <div class="standard-header">
+                    </div>
+                    
+                    <div>
+                        <section class="standard-section">
+                            <span class="response-dialog-text"></span>
+                        </section>
+                        
+                        <section class="standard-section">
+                            <button class="response-dialog-confirm-bttn">Confirm</button>
+                        </section>
+                    </div>
+                </div>
+            </div>
         </div>
      
     <script src="assets/js/inventory.js"></script>

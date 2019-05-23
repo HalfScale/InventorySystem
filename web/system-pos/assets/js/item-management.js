@@ -5,17 +5,19 @@ var itemTable = document.querySelector('.pos-table-body');
 var settingModal = document.querySelector('#pos-quantity-modal');
 var setModalOkBttn = document.querySelector('.pos-modal-ok-button');
 var setModalCancelBttn = document.querySelector('.pos-modal-cancel-button');
-var checkoutModal = document.querySelector("#checkout-modal");
+var checkoutModal = document.querySelector('#checkout-modal');
 
 var modalQtyInput = document.querySelector('.pos-modal-setting-input');
 var cartItems = document.querySelector('#cart-item-list');
 var modalTypeInput = document.querySelector('.pos-modal-price-type');
 
-var checkoutBttn = document.querySelector("#checkout-button");
-var checkoutCancelBttn = document.querySelector(".checkout-cancel");
-var checkoutConfirmBttn = document.querySelector(".checkout-confirm");
+var checkoutBttn = document.querySelector('#checkout-button');
+var checkoutCancelBttn = document.querySelector('.checkout-cancel');
+var checkoutConfirmBttn = document.querySelector('.checkout-confirm');
 
-var transactionTypeSelect = document.querySelector(".transaction-type-select");
+var transactionTypeSelect = document.querySelector('.transaction-type-select');
+
+var responseDialogModal = document.getElementById('response-dialog');
 
 var currentItemMap;
 var itemTotalAmount = 0;
@@ -122,6 +124,9 @@ checkoutConfirmBttn.onclick = function() {
                 cartItems.removeChild(cartItems.firstChild);
             }
             checkoutItem = [];
+            checkoutBttn.innerHTML = 'Checkout -> &#8369;' + 0;
+            checkoutBttn.disabled = true;
+            itemTotalAmount = 0;
             alert('items checked out!');
         }
     };

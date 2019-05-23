@@ -388,12 +388,14 @@ public class SystemController extends HttpServlet {
         throws Exception{
         
         String param = request.getParameter("param");
-        System.out.println("addBrand method");
-        String message = dbUtil.addBrand(param);
+        
+        Gson gson = new Gson();
+        Map data = dbUtil.addBrand(param);
         
         PrintWriter out = response.getWriter();
-        response.setHeader("Content-Type", "text/plain");
-        out.println(message);
+        response.setHeader("Content-Type", "application/json");
+        String json = gson.toJson(data);
+        out.println(json);
         
         registerSystemLog(request, response, LogType.ADD_BRAND);
     }
@@ -425,11 +427,13 @@ public class SystemController extends HttpServlet {
         throws Exception{
         
         String param = request.getParameter("param");
+        Gson gson = new Gson();
+        Map data = dbUtil.addCategory(param);
         
-        String message = dbUtil.addCategory(param);
         PrintWriter out = response.getWriter();
-        response.setHeader("Content-Type", "text/plain");
-        out.println(message);
+        response.setHeader("Content-Type", "application/json");
+        String json = gson.toJson(data);
+        out.println(json);
         
         registerSystemLog(request, response, LogType.ADD_CATEGORY);
     }
@@ -479,13 +483,13 @@ public class SystemController extends HttpServlet {
         throws Exception{
         
         String param = request.getParameter("param");
-        Console.log("param", param);
-        String message = dbUtil.addTransactionType(param);
-        Console.log("message", message);
+        Gson gson = new Gson();
+        Map data = dbUtil.addTransactionType(param);
         
-        response.setHeader("Content-Type", "text/plain");
+        response.setHeader("Content-Type", "application/json");
         PrintWriter out = response.getWriter();
-        out.println(message);
+        String json = gson.toJson(data);
+        out.println(json);
         
         registerSystemLog(request, response, LogType.ADD_TRANSACTION_TYPE);
     }

@@ -175,6 +175,23 @@
             </div>
         </div>
         
+        <div id="response-dialog" class="standard-modal">
+            <div class="response-dialog-content">
+                <div class="standard-header">
+                </div>
+
+                <div>
+                    <section class="standard-section">
+                        <span class="response-dialog-text"></span>
+                    </section>
+
+                    <section class="standard-section">
+                        <button class="response-dialog-confirm-bttn">Confirm</button>
+                    </section>
+                </div>
+            </div>
+        </div>
+        
         <script src="assets/js/item-table.js"></script>
         <script src="assets/js/item-management.js"></script>
         <script src="assets/js/transaction.js"></script>

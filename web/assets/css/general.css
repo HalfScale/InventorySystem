@@ -36,3 +36,11 @@
     height: 450px;
     overflow: auto;
 }
+
+/*DIALOGS*/
+
+.response-dialog-content {
+    width: 270px;
+    margin: auto auto;
+    background-color: #ffffff;
+}

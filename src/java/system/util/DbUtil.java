@@ -168,6 +168,7 @@ public class DbUtil {
         try {
             
             myConn = datasource.getConnection();
+            myConn.setAutoCommit(false);
             String query = "insert into item(name, code, brand, category, description, price, reseller_price, stock) values(?, ?, ?, ?, ?, ?, ?, ?)";
             
             myStmt = myConn.prepareStatement(query);
@@ -181,7 +182,12 @@ public class DbUtil {
             myStmt.setInt(8, item.getStock());
             
             myStmt.execute();
+            
+            myConn.commit();
         
+        }catch(Exception e) {
+            e.printStackTrace();
+            myConn.rollback();
         }finally{
             close(myConn, null, myStmt);
         }
@@ -305,6 +311,8 @@ public class DbUtil {
         try {
             
             myConn = datasource.getConnection();
+            myConn.setAutoCommit(false);
+            
             String query = "update item set name = ?, code = ?, brand = ?, category = ?, description = ?, price = ?, reseller_price = ?, "
                     + "stock = ? where id = ?";
             myStmt = myConn.prepareStatement(query);
@@ -319,6 +327,11 @@ public class DbUtil {
             myStmt.setInt(9, item.getId());
             
             myStmt.execute();
+            
+            myConn.commit();
+        }catch(Exception e) {
+            e.printStackTrace();
+            myConn.rollback();
         }finally{
             close(myConn, null, myStmt);
         }
@@ -331,12 +344,19 @@ public class DbUtil {
         
         try {
             myConn = datasource.getConnection();
+            myConn.setAutoCommit(false);
             String query = "delete from item where id = ?";
             
             myStmt = myConn.prepareStatement(query);
             myStmt.setInt(1, itemId);
             
             myStmt.execute();
+            
+            myConn.commit();
+            
+        }catch(Exception e) {
+            myConn.rollback();
+            e.printStackTrace();
         }finally {
             close(myConn, null, myStmt);
         }
@@ -450,6 +470,7 @@ public class DbUtil {
         
         try {
             myConn = datasource.getConnection();
+            myConn.setAutoCommit(false);
             String insertToTransac = "insert into transaction (type, total_amount, total_quantity, timestamp) values(?, ?, ?, ?)";
             myStmt = myConn.prepareStatement(insertToTransac, Statement.RETURN_GENERATED_KEYS);
             
@@ -494,7 +515,6 @@ public class DbUtil {
             mySecondStmt = myConn.prepareStatement(insertToTransacDetails);
             
             //Inserting transaction's details to transaction_detail table
-            myConn.setAutoCommit(false);
             for(JsonElement item : items) {
                 int quantity = item.getAsJsonObject().get("quantity").getAsInt();
                 BigDecimal total = item.getAsJsonObject().get("total").getAsBigDecimal();
@@ -509,8 +529,6 @@ public class DbUtil {
             
             //Commit the inserted row after the loop is finished
             mySecondStmt.executeBatch();
-            myConn.commit();
-            myConn.setAutoCommit(true);
             
             //This query is for updating the stocks of the item
             //after the checkout
@@ -535,8 +553,12 @@ public class DbUtil {
                 
             }
             
+            myConn.commit();
             Console.log("Updating the items successful!");
         
+        }catch(Exception e) {
+            e.printStackTrace();
+            myConn.rollback();
         }finally {
             close(myConn, myRs, myStmt, mySecondStmt);
             
@@ -624,18 +646,14 @@ public class DbUtil {
     public void registerLog(int type, User user) throws Exception{
         Connection myConn = null;
         PreparedStatement myStmt = null;
+        
         //The JDBC always use the default timezone for dates which is (UTC)
         Calendar calendar = Calendar.getInstance(new Locale("PH"));
-        
-        if(user != null) {
-            Console.log("User", user.getName());
-        }else {
-            Console.log("User is null");
-        }
         
         try {
             
             myConn = datasource.getConnection();
+            myConn.setAutoCommit(false);
             String insert = "insert into system_log (log_type, timestamp, user_id) values(?, ?, ?)";
             myStmt = myConn.prepareStatement(insert);
             myStmt.setInt(1, type);
@@ -645,20 +663,27 @@ public class DbUtil {
             
             
             myStmt.execute();
+            myConn.commit();
             System.out.println("Log register sucessful!");
             
+        }catch(Exception e) {
+            e.printStackTrace();
+            myConn.rollback();
         }finally{
             close(myConn, null, myStmt);
         }
     }
 
-    public String addBrand(String param) throws Exception{
+    public Map addBrand(String param) throws Exception{
         Connection myConn = null;
         PreparedStatement myStmt = null;
         String message = "Brand insertion unsuccessful!";
+        Map response = new HashMap();
+        response.put("message", message);
         
         try {
             myConn = datasource.getConnection();
+            myConn.setAutoCommit(false);
             String insert = "insert into brand (name) values (?)";
             myStmt = myConn.prepareStatement(insert);
             
@@ -666,14 +691,21 @@ public class DbUtil {
             int result = myStmt.executeUpdate();
             
             if(result == 1) {
-                message = param;
+                message = "Brand insertion successful!";
+                response.put("message", message);
+                response.put("item", param);
             }
             
+            myConn.commit();
+            
+        }catch(Exception e) {
+            myConn.rollback();
+            throw new Exception(e.getMessage(), e);
         }finally {
             close(myConn, null, myStmt);
         }
         
-        return message;
+        return response;
     }
 
     public List<Brand> listBrand() throws Exception{
@@ -766,27 +798,37 @@ public class DbUtil {
         return categories;
     }
 
-    public String addCategory(String param) throws Exception{
+    public Map addCategory(String param) throws Exception{
         Connection myConn = null;
         PreparedStatement myStmt = null;
-        String message = "Category insertion unsuccessful";
+        String message = "Category insertion unsuccessful!";
+        Map response = new HashMap();
+        response.put("message", message);
         
         try {
             myConn = datasource.getConnection();
+            myConn.setAutoCommit(false);
             String insert = "insert into category (name) values (?)";
             myStmt = myConn.prepareStatement(insert);
             myStmt.setString(1, param);
             int result = myStmt.executeUpdate();
             
             if(result == 1) {
-                message = param;
+                message = "Category insertion successful!";
+                response.put("message", message);
+                response.put("item", param);
             }
+            
+            myConn.commit();
                     
+        }catch(Exception e) {
+            e.printStackTrace();
+            myConn.rollback();
         }finally {
             close(myConn, null, myStmt);
         }
         
-        return message;
+        return response;
     }
     
     public Category getCategoryById(int targetId) throws Exception{
@@ -823,11 +865,18 @@ public class DbUtil {
         
         try {
             myConn = datasource.getConnection();
+            myConn.setAutoCommit(false);
             String delete = "delete from brand where id = ?";
             
             myStmt = myConn.prepareStatement(delete);
             myStmt.setInt(1, id);
             myStmt.executeUpdate();
+            
+            myConn.commit();
+            
+        }catch(Exception e) {
+            myConn.rollback();
+            e.printStackTrace();
             
         }finally {
             close(myConn, null, myStmt);
@@ -840,13 +889,19 @@ public class DbUtil {
 
         try {
             myConn = datasource.getConnection();
+            myConn.setAutoCommit(false);
             String delete = "delete from category where id = ?";
 
             myStmt = myConn.prepareStatement(delete);
             myStmt.setInt(1, id);
             myStmt.executeUpdate();
+            
+            myConn.commit();
 
-        } finally {
+        }catch(Exception e) {
+            myConn.rollback();
+            e.printStackTrace();
+        }finally {
             close(myConn, null, myStmt);
         }
     }
@@ -883,14 +938,16 @@ public class DbUtil {
         return transactionTypes;
     }
 
-    public String addTransactionType(String param) throws Exception{
+    public Map addTransactionType(String param) throws Exception{
         Connection myConn = null;
         PreparedStatement myStmt = null;
-        
-        String message = "Transaction type insertion unsuccessful";
+        String message = "Transaction type insertion unsuccessful!";
+        Map response = new HashMap();
+        response.put("message", message);
         
         try {
             myConn = datasource.getConnection();
+            myConn.setAutoCommit(false);
             String insert = "insert into transaction_type(name) values (?)";
             
             myStmt = myConn.prepareStatement(insert);
@@ -899,15 +956,21 @@ public class DbUtil {
             int result = myStmt.executeUpdate();
             
             if(result == 1) {
-                message = param;
+                message = "Transaction type insertion successful!";
+                response.put("message", message);
+                response.put("item", param);
             }
             
+            myConn.commit();
             Console.log("message", message);
+        }catch(Exception e) {
+            myConn.rollback();
+            throw new Exception(e.getMessage(), e);
         }finally {
             close(myConn, null, myStmt);
         }
         
-        return message;
+        return response;
     }
 
     public void deleteTransactionType(int id) throws Exception{
@@ -917,12 +980,17 @@ public class DbUtil {
         try {
             
             myConn = datasource.getConnection();
+            myConn.setAutoCommit(false);
             String delete = "delete from transaction_type where id = ?";
             
             myStmt = myConn.prepareStatement(delete);
             myStmt.setInt(1, id);
             myStmt.executeUpdate();
-        
+            
+            myConn.commit();
+        }catch(Exception e) {
+            e.printStackTrace();
+            myConn.rollback();
         }finally {
             close(myConn, null, myStmt);
         }
@@ -1005,7 +1073,7 @@ public class DbUtil {
             String query = "select t.id, t.type, t.total_amount, t.total_quantity\n"
                     + ", t.timestamp, tt.id as transaction_type_id, tt.name as transaction_type_name from transaction t \n"
                     + "inner join transaction_type tt\n"
-                    + "on t.type = tt.id";
+                    + "on t.type = tt.id order by t.id desc";
             
             myStmt = myConn.prepareStatement(query);
             myRs = myStmt.executeQuery();

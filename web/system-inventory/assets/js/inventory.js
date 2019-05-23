@@ -36,6 +36,11 @@ var addCategorySelect = document.getElementById('add-category');
 var updateBrandSelect = document.getElementById('update-brand');
 var updateCategorySelect = document.getElementById('update-category');
 
+var responseDialog = document.getElementById('response-dialog');
+var responseDialogText = document.querySelector('.response-dialog-text');
+var responseDialogConfirmBttn = document.querySelector('.response-dialog-confirm-bttn');
+
+
 addItemBttn.onclick = function() {
     
     var xmlhttp = new XMLHttpRequest();
@@ -107,6 +112,10 @@ brandCloseBttn.onclick = function() {
 transactionCloseBttn.onclick = function() {
     transactionModal.style.display = 'none';
     removeElemChild(transactionTableBody);
+}
+
+responseDialogConfirmBttn.onclick = function() {
+    responseDialog.style.display = 'none';
 }
 
 addItemForm.onsubmit = function(event) {
@@ -585,16 +594,22 @@ brandForm.onsubmit = function(event) {
     xmlhttp.onreadystatechange = function() {
         if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             console.log('result', this.responseText);
-            var brandName = this.responseText;
-            var row = document.createElement('tr');
             
-            var cell = document.createElement('td');
-            cell.innerHTML = brandName;
+            var response = JSON.parse(this.responseText);
+            if(response.item != null) {
+                var brandName = response.item;
+                var row = document.createElement('tr');
+
+                var cell = document.createElement('td');
+                cell.innerHTML = brandName;
+
+                row.appendChild(cell);
+                brandTableBody.appendChild(row);
+            }
             
-            row.appendChild(cell);
-            brandTableBody.appendChild(row);
             brandInput.value = '';
-            brandInput.focus();
+            responseDialog.style.display = 'block';
+            responseDialogText.innerHTML = response.message;
         }
     }
     
@@ -689,16 +704,22 @@ categoryForm.onsubmit = function(event) {
     xmlhttp.onreadystatechange = function() {
         if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             console.log('result', this.responseText);
-            var categoryName = this.responseText;
+            var response = JSON.parse(this.responseText);
             
-            var row = document.createElement('tr');
-            var cell = document.createElement('td');
-            cell.innerHTML = categoryName;
+            if(response.item != null) {
+                
+                var row = document.createElement('tr');
+                var cell = document.createElement('td');
+                cell.innerHTML = response.item;
+
+                row.appendChild(cell);
+                categoryTableBody.appendChild(row);
+                
+            }
             
-            row.appendChild(cell);
-            categoryTableBody.appendChild(row);
             categoryInput.value = '';
-            categoryInput.focus();
+            responseDialog.style.display = 'block';
+            responseDialogText.innerHTML = response.message;
         }
     }
     
@@ -798,17 +819,23 @@ transactionTypeForm.onsubmit = function(event) {
     
     xmlhttp.onreadystatechange = function() {
         if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            var transactionTypeName = this.responseText;
-            console.log('add result', transactionTypeName);
+            console.log('add result', this.responseText);
+            var response = JSON.parse(this.responseText);
             
-            var row = document.createElement('tr');
-            var cell = document.createElement('td');
-            cell.innerHTML = transactionTypeName;
-            row.appendChild(cell);
+            if(response != null) {
+                
+                var row = document.createElement('tr');
+                var cell = document.createElement('td');
+                cell.innerHTML = response.item;
+                row.appendChild(cell);
+
+                transactionTableBody.appendChild(row);
+                
+            }
             
-            transactionTableBody.appendChild(row);
             transactionTypeInput.value = '';
-            transactionTypeInput.focus();
+            responseDialog.style.display = 'block';
+            responseDialogText.innerHTML = response.message;
         }
     }
     
