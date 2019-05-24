@@ -67,6 +67,7 @@ transactionModalTbody.onclick = function(e) {
             result.forEach(function(detail) {
 //                console.log('detail', detail.item.name);
                 var row = document.createElement('tr');
+                var resllerPrice = detail.isResellerPrice; // determines wether its a reseller or not
                 var cells = [detail.item.name, 
                     detail.item.brand.name, 
                     detail.item.category.name, 
@@ -76,10 +77,19 @@ transactionModalTbody.onclick = function(e) {
                     detail.totalAmount
                 ];
                 
-                cells.forEach(function(item) {
+                cells.forEach(function(item, index) {
                     console.log(cell);
                     var cell = document.createElement('td');
                     cell.innerHTML = item;
+                    
+                    if(index === 3 && !resllerPrice) {
+                        cell.classList.add('green-cell');
+                    }
+                    
+                    if(index === 4 && resllerPrice) {
+                        cell.classList.add('green-cell');
+                    }
+                    
                     row.appendChild(cell);
                 });
 //                

@@ -127,7 +127,7 @@
                 </div>
 
                 <div class="scrollable-table">
-                    <table>
+                    <table id="transaction-table">
                         <thead>
                             <tr>
                                 <th>Transaction Type</th>
@@ -177,7 +177,7 @@
         
         <div id="response-dialog" class="standard-modal">
             <div class="response-dialog-content">
-                <div class="standard-header">
+                <div class="standard-div-header">
                 </div>
 
                 <div>
