@@ -332,11 +332,11 @@ public class SystemController extends HttpServlet {
         String type = checkOutItems.get("type").getAsString();
         JsonArray items = checkOutItems.get("checkoutItem[]").getAsJsonArray();
         
-        dbUtil.checkOutItems(items, type);
+        String message = dbUtil.checkOutItems(items, type);
 //        
         PrintWriter out = response.getWriter();
         response.setHeader("Content-Type", "text/plain");
-        out.println("Checkout successful!");
+        out.println(message);
         registerSystemLog(request, response, LogType.CHECKOUT_ITEM);
     }
 

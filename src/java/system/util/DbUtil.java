@@ -461,12 +461,13 @@ public class DbUtil {
         return itemArchive;
     }
 
-    public void checkOutItems(JsonArray items, String type) throws Exception{
+    public String checkOutItems(JsonArray items, String type) throws Exception{
         Connection myConn = null;
         PreparedStatement myStmt = null;
         PreparedStatement mySecondStmt = null;
         Statement queryStmt = null;
         ResultSet myRs = null;
+        String message = "Checkout unsuccessful.";
         
         try {
             myConn = datasource.getConnection();
@@ -502,7 +503,7 @@ public class DbUtil {
             try (ResultSet generatedKeys = myStmt.getGeneratedKeys()) {
                 if(generatedKeys.next()) {
                     insertedId = generatedKeys.getInt(1);
-                    System.out.println("insertedId" + insertedId);
+                    Console.log("insertedId", insertedId);
                 }else {
                     throw new SQLException("No id obtained!");
                 }
@@ -511,7 +512,7 @@ public class DbUtil {
             System.out.println("inserted a transaction row!");
             System.out.println("last inserted id " + insertedId);
             
-            String insertToTransacDetails = "insert into transaction_detail (transaction_id, item_id, quantity, total_amount) values (?, ?, ?, ?)";
+            String insertToTransacDetails = "insert into transaction_detail (transaction_id, item_id, quantity, total_amount, is_reseller_price) values (?, ?, ?, ?, ?)";
             mySecondStmt = myConn.prepareStatement(insertToTransacDetails);
             
             //Inserting transaction's details to transaction_detail table
@@ -519,11 +520,15 @@ public class DbUtil {
                 int quantity = item.getAsJsonObject().get("quantity").getAsInt();
                 BigDecimal total = item.getAsJsonObject().get("total").getAsBigDecimal();
                 int id = item.getAsJsonObject().get("id").getAsInt();
+                String priceType = item.getAsJsonObject().get("priceType").getAsString();
+                
+                boolean isResellerPrice = priceType.equalsIgnoreCase("reseller") ? true : false;
                 
                 mySecondStmt.setInt(1, insertedId);
                 mySecondStmt.setInt(2, id);
                 mySecondStmt.setInt(3, quantity);
                 mySecondStmt.setBigDecimal(4, total);
+                mySecondStmt.setBoolean(5, isResellerPrice);
                 mySecondStmt.addBatch();
             }
             
@@ -554,6 +559,7 @@ public class DbUtil {
             }
             
             myConn.commit();
+            message = "Checkout successful!";
             Console.log("Updating the items successful!");
         
         }catch(Exception e) {
@@ -567,6 +573,8 @@ public class DbUtil {
                 queryStmt.close();
             }
         }
+        
+        return message;
     }
 
     public List<LogType> getAllLogTypes() throws Exception{
@@ -1131,6 +1139,7 @@ public class DbUtil {
                 int itemId = myRs.getInt("item_id");
                 int quantity = myRs.getInt("quantity");
                 BigDecimal totalAmount = myRs.getBigDecimal("total_amount");
+                boolean isResellerPrice = myRs.getBoolean("is_reseller_price");
                 
                 Item item = getItemById(itemId);
                 Transaction transaction = getTransactionById(transactionId);
@@ -1140,6 +1149,7 @@ public class DbUtil {
                 transactionDetail.setItem(item);
                 transactionDetail.setQuantity(quantity);
                 transactionDetail.setTotalAmount(totalAmount);
+                transactionDetail.setIsResellerPrice(isResellerPrice);
                 
                 transactionDetails.add(transactionDetail);
             }

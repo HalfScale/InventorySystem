@@ -32,7 +32,7 @@ td {
     padding: 10px;
 }
 
-tbody tr:hover {
+#transaction-table tr:hover, #pos-table tr:hover  {
     background-color: #be2213;
     color: #ffffff;
     cursor: pointer;
@@ -141,4 +141,8 @@ tbody tr:hover {
 
 .pos-header span:hover{
     color: #fff;
+}
+
+.green-cell{
+    background-color: #59ff8b;
 }

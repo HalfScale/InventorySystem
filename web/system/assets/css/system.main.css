@@ -32,12 +32,6 @@ td {
     padding: 10px;
 }
 
-tbody tr:hover {
-    background-color: #be2213;
-    color: #ffffff;
-    cursor: pointer;
-}
-
 .log-type-selection{
     margin: 5px 0px;
     padding: 5px;

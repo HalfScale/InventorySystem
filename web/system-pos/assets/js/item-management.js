@@ -18,14 +18,21 @@ var checkoutConfirmBttn = document.querySelector('.checkout-confirm');
 var transactionTypeSelect = document.querySelector('.transaction-type-select');
 
 var responseDialogModal = document.getElementById('response-dialog');
+var responseTestResponse = document.querySelector('.response-dialog-text');
+var responseDialogConfirm = document.querySelector('.response-dialog-confirm-bttn');
 
 var currentItemMap;
 var itemTotalAmount = 0;
+
 //initialize checkout button
 checkoutBttn.setAttribute('title', 0);
 checkoutBttn.disabled = true;
 
 getTransactionTypes();
+
+responseDialogConfirm.onclick = function() {
+    responseDialogModal.style.display = 'none';
+}
 
 setModalOkBttn.onclick = function() {
     var itemRow = itemTable.children;
@@ -40,6 +47,7 @@ setModalOkBttn.onclick = function() {
         var quantity = modalQtyInput.value;
         var stock = currentItemMap['stock'];
         currentItemMap['cartQuantity'] = quantity;
+        currentItemMap['']
         var itemBox = createCartItemBox(currentItemMap);
         console.log('currentItemMap', currentItemMap);
         
@@ -87,10 +95,12 @@ checkoutBttn.onclick = function() {
         var itemQuantity = children[i].querySelector('.item-quantity');
         var itemTotal = children[i].dataset['itemSubtotal'];
         var itemId = children[i].dataset['itemId'];
+        var priceType = children[i].dataset['priceType'];
         console.log('item qty', itemQuantity.getAttribute('title'));
         itemMap['quantity'] = itemQuantity.getAttribute('title');
         itemMap['total'] = itemTotal;
         itemMap['id'] = itemId;
+        itemMap['priceType'] = priceType;
         
         checkoutItem.push(itemMap);
     }
@@ -127,7 +137,8 @@ checkoutConfirmBttn.onclick = function() {
             checkoutBttn.innerHTML = 'Checkout -> &#8369;' + 0;
             checkoutBttn.disabled = true;
             itemTotalAmount = 0;
-            alert('items checked out!');
+            responseDialogModal.style.display = 'block';
+            responseTestResponse.innerHTML = this.responseText;
         }
     };
     
@@ -230,6 +241,7 @@ function createCartItemBox(data) {
     container.className += ' cart-item-box';
     container.dataset['itemId'] = data.id;
     container.dataset['itemSubtotal'] = subTotal;
+    container.dataset['priceType'] = modalTypeInput.value;
     // for displaying checkout total amount
     
     // sections of div box (3 sections)

@@ -17,6 +17,7 @@ public class TransactionDetail {
     private Item item;
     private int quantity;
     private BigDecimal totalAmount;
+    private boolean isResellerPrice;
 
     public int getId() {
         return id;
@@ -56,6 +57,14 @@ public class TransactionDetail {
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public boolean isIsResellerPrice() {
+        return isResellerPrice;
+    }
+
+    public void setIsResellerPrice(boolean isResellerPrice) {
+        this.isResellerPrice = isResellerPrice;
     }
     
     
