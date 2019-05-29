@@ -26,7 +26,6 @@ var itemTotalAmount = 0;
 
 //initialize checkout button
 checkoutBttn.setAttribute('title', 0);
-checkoutBttn.disabled = true;
 
 getTransactionTypes();
 
@@ -72,7 +71,7 @@ setModalOkBttn.onclick = function() {
     itemTotalAmount += parseFloat(itemBox.dataset['itemSubtotal']);
     cartItems.appendChild(itemBox);
     checkoutBttn.setAttribute('title', itemTotalAmount);
-    checkoutBttn.innerHTML = 'Checkout -> &#8369;' + toTwoDecimal(itemTotalAmount);
+    checkoutBttn.innerHTML = 'Checkout (&#8369;' + toTwoDecimal(itemTotalAmount) + ')';
     checkoutBttn.disabled = false;
     
     settingModal.style.display = 'none';
@@ -87,6 +86,9 @@ var checkoutMap = {
 };
 var checkoutItem = [];
 checkoutBttn.onclick = function() {
+    var total = checkoutBttn.getAttribute('title');
+    if(total == 0) return false;
+        
     console.log('cart items', cartItems.children);
     var children = cartItems.children;
     for(var i = 0; i < children.length; i++) {
@@ -106,7 +108,6 @@ checkoutBttn.onclick = function() {
     }
     
     var checkoutTotal = checkoutModal.querySelector('.checkout-total');
-    var total = checkoutBttn.getAttribute('title');
     checkoutTotal.innerHTML = '&#8369;' + parseFloat(total).toFixed(2);
     checkoutModal.style.display = 'block';
 }
@@ -134,7 +135,7 @@ checkoutConfirmBttn.onclick = function() {
                 cartItems.removeChild(cartItems.firstChild);
             }
             checkoutItem = [];
-            checkoutBttn.innerHTML = 'Checkout -> &#8369;' + 0;
+            checkoutBttn.innerHTML = 'Checkout (&#8369;' + 0 + '.00)';
             checkoutBttn.disabled = true;
             itemTotalAmount = 0;
             responseDialogModal.style.display = 'block';
@@ -173,7 +174,7 @@ cartItems.addEventListener('click', function(event) {
         }
     }
         
-   checkoutBttn.innerHTML = 'Checkout -> &#8369;' + toTwoDecimal(itemTotalAmount);
+   checkoutBttn.innerHTML = 'Checkout &#8369; (' + toTwoDecimal(itemTotalAmount) + ')';
 });
 
 itemTable.addEventListener('click', function(event) {

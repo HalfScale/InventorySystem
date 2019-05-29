@@ -14,48 +14,52 @@
         <title>POS</title>
     </head>
     <body>
-        <div id="view-content">
+        <!--<div id="view-content">-->
             <!--table here-->
-            <div id="pos-table-div">
-                <div class="pos-header flex-horizontal clicky">
-                    <span class="pos-transaction-bttn">Transactions</span>
+                <input id="item-search-bar" type="text" placeholder="Search for item...">
+                <div class="pos-header flex-horizontal">
+                    <span class="pos-transaction-bttn clicky">Transactions</span>
                 </div>
-            <input id="item-search-bar" type="text" placeholder="Search for item...">
-                <table id="pos-table">
-                    <thead>
-                        <th><span>Name</span></th>
-                        <th><span>Code</span></th>
-                        <th><span>Brand</span></th>
-                        <th><span>Category</span></th>
-                        <th><span>Description</span></th>
-                        <th><span>Price</span></th>
-                        <th><span>Reseller Price</span></th>
-                        <th><span>Stock</span></th>
-                    </thead>
+                
+            <div id="pos-table-div">
+                
+                
+                <div class="scrollable">
+                    <table id="pos-table">
+                        <thead>
+                            <th><span>Name</span></th>
+                            <th><span>Code</span></th>
+                            <th><span>Brand</span></th>
+                            <th><span>Category</span></th>
+                            <th><span>Description</span></th>
+                            <th><span>Price</span></th>
+                            <th><span>Reseller Price</span></th>
+                            <th><span>Stock</span></th>
+                        </thead>
 
-                    <tbody class="pos-table-body">
-                    </tbody>
-                </table>
+                        <tbody class="pos-table-body">
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!--items to be purchased here-->
+            <div class="cart-header">
+                <span>Cart</span>
+            </div>
             <div id="cart-div">
-                <div class="cart-header">
-                    <span>Cart</span>
-                </div>
                 
                 <div id="cart-item-list">
                 </div>
-                
-                <div class="cart-buttons">
-                    <button id="checkout-button">Checkout -> &#8369;0.00</button>
-                </div>
+            </div>
+            <div id="checkout-button" class="cart-buttons clicky">
+                <!--<button id="checkout-button">Checkout -> &#8369;0.00</button>-->
+                <label class="clicky">Checkout (&#8369;0.00)</label>
             </div>
 
-            <!--some footer here-->
             <div>
             </div>
-        </div>
+        <!--</div>-->
         
         <!--Modals-->
         <div id="pos-quantity-modal">

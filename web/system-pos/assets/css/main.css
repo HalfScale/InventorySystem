@@ -3,19 +3,36 @@ body{
 }
 
 #view-content{
+
     margin-left: 160px;
+    margin-right: 500px;
+    /*position: fixed;*/
+    top: 0%;
+    bottom: 0%;
+    right: 0%;
+    left: 0%;
+    
 }
 
 table{
     width: 100%;
 }
 
-#pos-table-div{
-    width: 65%;
-    float: left;
-    height: 624px;
-    overflow: auto;
+.scrollable{
+    position: relative;
+    overflow-y: auto;
+    height: 100%;
 }
+
+
+#pos-table-div {
+    position: fixed;
+    top: 96px;
+    left: 160px;
+    right: 461px;
+    bottom: 0%;
+}
+
 
 table, th, td {
     border-collapse: collapse;
@@ -38,32 +55,49 @@ td {
     cursor: pointer;
 }
 
-#cart-div{
-    float: right;
-    width: 35%;
+#cart-div {
+    position: fixed;
+    top: 29px;
+    bottom: 30px;
+    right: 0%;
+    left: 1076px;
+    border: 1px solid #a7a7a7;
 }
 
-.cart-header{
+.cart-header {
     padding: 5px;
     background-color: #be2213;
     color: #ffffff;
     border-top: 1px solid #a7a7a7;
     border-right: 1px solid #a7a7a7;
     border-left: 1px solid #a7a7a7;
+    position: fixed;
+    top: 0px;
+    left: 1076px;
+    right: 0px;
 }
 
-#cart-item-list{
-    height: 567px;
+#cart-item-list {
+    /* height: 567px; */
     border-left: 1px solid #a7a7a7;
     border-right: 1px solid #a7a7a7;
-    overflow: auto;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.cart-buttons {
+    width: 451px;
+    padding: 5px;
+    position: fixed;
+    bottom: 0%;
+    left: 1076px;
+    background-color: #be2213;
+    color: #fff;
 }
 
 .cart-buttons #checkout-button{
-    width: 100%;
-    padding: 5px;
+    
 }
-
 /*POS MODAL FOR SETTING QTY*/
 
 #pos-quantity-modal{
@@ -127,16 +161,26 @@ td {
     border-bottom: 1px solid #9f9d9d;
 }
 
-#item-search-bar{
-    width: 98%;
-    margin: 10px auto;
+#item-search-bar {
+    width: 25%;
     padding: 5px;
+    position: fixed;
+    top: 50px;
+    left: 162px;
 }
 
-.pos-header{
+#item-search-bar:focus{
+    width: 40%;
+}
+.pos-header {
     padding: 5px;
     background-color: #be2213;
     color: #7b8494;
+    position: fixed;
+    top: 0;
+    left: 160px;
+    right: 460px;
+    border: 1px solid #cacaca;
 }
 
 .pos-header span:hover{
