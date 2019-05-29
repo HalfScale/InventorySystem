@@ -155,7 +155,8 @@ addItemForm.onsubmit = function(event) {
     
     xmlhttp.onreadystatechange = function() {
         if(this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            window.location.reload();
+//            clearFormInputs('add');
+            location.reload(true);
         }
     };
     
@@ -887,12 +888,16 @@ transactionCancelBttn.onclick = function() {
 function clearFormInputs(prefix) {
     var name = document.getElementById(prefix + '-' + 'name');
     var code = document.getElementById(prefix + '-' + 'code');
+    var brand = document.getElementById(prefix + '-' + 'brand');
+    var category = document.getElementById(prefix + '-' + 'category');
     var description = document.getElementById(prefix + '-' +'description');
     var price = document.getElementById(prefix + '-' + 'price');
     var stock = document.getElementById(prefix + '-' + 'stock');
     
     name.value = "";
     code.value = "";
+    addOptionFiller(brand, 'Select a brand');
+    addOptionFiller(category, 'Select a category');
     description.value = "";
     price.value = "";
     stock.value = "";
