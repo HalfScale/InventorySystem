@@ -23,11 +23,12 @@
         
     
     <body>
-        <div id="test-element" data-itemId="">
+        <div>
         <div class="side-nav">
             <a href="${pageContext.request.contextPath}/system-home/home.jsp">Home</a>
             <a href="${pageContext.request.contextPath}/system-pos/pos.jsp">POS</a>
             <a href="${pageContext.request.contextPath}/system-inventory/inventory.jsp">Inventory</a>
+            <a href="${pageContext.request.contextPath}/system-user/user.jsp">Users</a>
             <a href="${pageContext.request.contextPath}/system/system-log.jsp">System Logs</a>
             <a href="${logoutURL}">Logout</a>
         </div>

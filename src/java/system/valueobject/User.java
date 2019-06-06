@@ -11,7 +11,9 @@ package system.valueobject;
  */
 public class User {
     private Integer id = -1;
-    private String name = "";
+    private String username;
+    private String name;
+    private Role role;
 
     public Integer getId() {
         return id;
@@ -27,6 +29,22 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
     
     

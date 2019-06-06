@@ -1,0 +1,95 @@
+.top-nav{
+    width: 100%;
+    background-color: #be2213;
+    height: 25px;
+}
+
+body {
+    margin: 0;
+}
+
+#item-search-bar{
+    margin-left: 160px;
+    width: 88%;
+}
+
+input[type=text], input[type=submit], input[type=button]
+, .select-generic{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 5px;
+    margin: 10px 0px;
+}
+
+/*TABLES*/
+table{
+    width: 100%;
+}
+
+table, th, td {
+    border-collapse: collapse;
+    border: 1px solid #a7a7a7;
+}
+
+td{
+    padding: 10px;
+}
+
+#user-table tr:hover{
+    background-color: #be2213;
+    color: #fff;
+}
+
+#role-table tr:hover{
+    background-color: #be2213;
+    color: #fff;
+}
+
+th {
+    background-color: #1c1b1b;
+    color: #ffffff;
+    padding: 5px;
+}
+
+#view-content {
+    margin-left: 160px;
+}
+
+.item-span{
+    float: right;
+    color: #7b8494;
+    margin-right: 10px;
+    padding-top: 5px;
+}
+
+.item-span:hover{
+    cursor: pointer;
+    color: #ffffff;
+}
+
+.role-div {
+    width: 25%;
+    margin: 10px auto;
+}
+
+.close{
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.close:hover{
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.form-header {
+	padding: 10px;
+	text-align: right;
+	background-color: #be2213;
+}
+
+#role-table tr{
+    background-color: #fff;
+}
+
