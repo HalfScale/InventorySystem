@@ -134,6 +134,12 @@ public class SystemController extends HttpServlet {
                 case "TRANSACTION_DETAILS_BY_ID": 
                     listTransactionDetailsById(request, response);
                     break;
+                case "LIST_USER": 
+                    listUser(request, response);
+                    break;
+                case "LIST_USER_BY_ID": 
+                    listUserById(request, response);
+                    break;
                 case "CHECKOUT": 
                     checkoutItems(request, response);
                     break;
@@ -536,6 +542,31 @@ public class SystemController extends HttpServlet {
         response.setHeader("Content-Type", "application/json");
         PrintWriter out = response.getWriter();
         out.println(result);
+    }
+
+    private void listUser(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception{
+        
+        Gson gson = new Gson();
+        List<User> users = dbUtil.getAllUsers();
+        
+        String result = gson.toJson(users);
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        out.println(result);
+    }
+
+    private void listUserById(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception {
+        response.setContentType("application/json");
+        String id = request.getParameter("id");
+        
+        Gson gson = new Gson();
+        User user = dbUtil.getUserById(Integer.parseInt(id));
+        
+        PrintWriter out = response.getWriter();
+        String json = gson.toJson(user);
+        out.println(json);
     }
     
 }

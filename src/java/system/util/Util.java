@@ -43,5 +43,24 @@ public class Util {
     }
     //</editor-fold>
     
+    //<editor-fold defaultstate="collapsed" desc="Utilities for Strings">
     
+    public static String underscoreToCapital(String word) {
+        String[] strings = word.split("_");
+        
+        StringBuilder sb = new StringBuilder();
+        
+        //We initialize variable i to 1 to avoid the first word.
+        for(int i = 1; i < strings.length; i++) {
+            String firstLetter = strings[i].substring(0, 1).toUpperCase();
+            String newWord = firstLetter + strings[i].substring(1);
+            sb.append(newWord);
+        }
+        
+        sb.insert(0, strings[0]); //insert the first word at the first position
+        
+        return sb.toString();
+    }
+    
+    //</editor-fold>
 }

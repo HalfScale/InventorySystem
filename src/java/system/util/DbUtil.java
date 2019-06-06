@@ -7,10 +7,12 @@ package system.util;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -34,6 +37,7 @@ import system.valueobject.Item;
 import system.valueobject.ItemArchive;
 import system.valueobject.ItemLog;
 import system.valueobject.LogType;
+import system.valueobject.Role;
 import system.valueobject.SystemLog;
 import system.valueobject.Transaction;
 import system.valueobject.TransactionDetail;
@@ -225,14 +229,14 @@ public class DbUtil {
         }
     }
     
-    public void close(Connection myConn, ResultSet myRs, PreparedStatement... myStmt) 
+    public void close(Connection myConn, ResultSet myRs, Statement... myStmt) 
         throws Exception{
         
         if(myConn != null) {
             myConn.close();
         }
         
-        for(PreparedStatement stmt : myStmt) {
+        for(Statement stmt : myStmt) {
             if(stmt != null) {
                 stmt.close();
             }
@@ -1161,4 +1165,163 @@ public class DbUtil {
         return transactionDetails;
     }
     
+    public List<Map> genericQueryMulti(String table) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        List<Map> data = new ArrayList<>();
+        
+        try {
+            myConn = datasource.getConnection();
+            
+            String query = String.format("select * from %s", table);
+            myStmt = myConn.prepareStatement(query);
+            myRs = myStmt.executeQuery();
+            
+            ResultSetMetaData rsmd = myRs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            
+            while(myRs.next()) {
+                Map entry = new LinkedHashMap();
+                
+                for(int i = 1; i <= columnCount; i++) {
+                    String columnName = Util.underscoreToCapital(rsmd.getColumnName(i));
+                    entry.put(columnName, myRs.getObject(i));
+                }
+                
+                data.add(entry);
+            }
+            
+            
+        } finally {
+            close(myConn, myRs, myStmt);
+        }
+        
+        return data;
+    }
+    
+    public Map genericQuery(String table, JsonObject filters) throws Exception {
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        Map data = new HashMap();
+        
+        try {
+            myConn = datasource.getConnection();
+            String query = String.format("select * from %s", table);
+            
+            String id = filters.get("id").getAsString();
+            
+            if(id != null) {
+                query += " where id = " + id;
+            }
+            
+            myStmt = myConn.prepareStatement(query);
+            myRs = myStmt.executeQuery();
+            
+            ResultSetMetaData rsmd = myRs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            
+            if(myRs.next()) {
+                
+                for (int i = 1; i <= columnCount; i++) {
+                    String columnName = Util.underscoreToCapital(rsmd.getColumnName(i));
+                    data.put(columnName, myRs.getObject(i));
+                }
+                
+            }
+
+        } finally {
+            close(myConn, myRs, myStmt);
+        }
+        
+        return data;
+    }
+
+    public List<User> getAllUsers() throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        List<User> users = new ArrayList<>();
+
+        try {
+            myConn = datasource.getConnection();
+            String query = "select * from user";
+            myStmt = myConn.prepareStatement(query);
+            myRs = myStmt.executeQuery();
+            
+            while(myRs.next()) {
+                int id = myRs.getInt("id");
+                String username = myRs.getString("user");
+                String name = myRs.getString("name");
+                int userRole = myRs.getInt("role");
+                
+                User user = new User();
+                user.setId(id);
+                user.setUsername(username);
+                user.setName(name);
+                
+                //used a genericQuery
+                JsonObject obj = new JsonObject();
+                obj.addProperty("id", userRole);
+                Map roleMap = genericQuery("role", obj);
+                
+                Role role = new Role();
+                role.setId((int) roleMap.get("id"));
+                role.setName((String) roleMap.get("name"));
+                user.setRole(role);
+                
+                users.add(user);
+            }
+
+        } finally {
+            close(myConn, myRs, myStmt);
+        }
+        
+        return users;
+    }
+
+    public User getUserById(int userId) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        User user = null;
+        
+        try {
+            myConn = datasource.getConnection();
+            String query = "select * from user where id = ?";
+            
+            myStmt = myConn.prepareStatement(query);
+            myStmt.setInt(1, userId);
+            
+            myRs = myStmt.executeQuery();
+            
+            if(myRs.next()) {
+                int id = myRs.getInt("id");
+                String username = myRs.getString("user");
+                String name = myRs.getString("name");
+                int roleId = myRs.getInt("role");
+                
+                user = new User();
+                user.setId(id);
+                user.setUsername(username);
+                user.setName(name);
+
+                //used a genericQuery
+                JsonObject obj = new JsonObject();
+                obj.addProperty("id", roleId);
+                Map roleMap = genericQuery("role", obj);
+
+                Role role = new Role();
+                role.setId((int) roleMap.get("id"));
+                role.setName((String) roleMap.get("name"));
+                user.setRole(role);
+            }
+
+        } finally {
+            close(myConn, myRs, myStmt);
+        }
+        
+        return user;
+    }
 }
