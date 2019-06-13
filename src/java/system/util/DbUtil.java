@@ -1324,4 +1324,33 @@ public class DbUtil {
         
         return user;
     }
+
+    public String addUser(User user) throws Exception{
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        String message = "User unsucessfully saved...";
+        
+        try {
+            myConn = datasource.getConnection();
+            
+            String insert = "insert into user (user, pass, name, role) values(?, ?, ?, ?)";
+            myStmt = myConn.prepareStatement(insert);
+            myStmt.setString(1, user.getUsername());
+            myStmt.setString(2, user.getPassword());
+            myStmt.setString(3, user.getName());
+            myStmt.setInt(4, user.getRole().getId());
+            int response = myStmt.executeUpdate();
+
+            if(response > 0) {
+                message = "User successfully saved!";
+            }
+            
+            
+        } finally {
+            close(myConn, myRs, myStmt);
+        }
+        
+        return message;
+    }
 }

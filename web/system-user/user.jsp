@@ -17,6 +17,7 @@
     <body>
         <div class="top-nav">
             <span id="role-item-span" class="item-span">Roles</span>
+            <span id="add-user-item-span" class="item-span">Add user</span>
         </div>
         
         <input id="item-search-bar" type="text" placeholder="Search for item...">
@@ -58,6 +59,40 @@
             </div>
         </div>
         
+        <div id="user-form-div" class="standard-modal">
+            <form id="user-form">
+                <div class="form-header">
+                    <span class="close user-modal-close"> ×</span>
+                </div>
+                <div id="user-form-content">
+<!--                    <input type="text" name="user[username]" pattern="^[^-\s][a-zA-Z0-9_\s-]+$" placeholder="Username">
+                    <input type="password" name="user[password]" placeholder="Password">-->
+                    <input id="user-username" type="text" name="user" pattern="^[^-\s][a-zA-Z0-9_\s-]+$" placeholder="Username" required>
+                    <input id="user-name" type="text" name="user" pattern="^[^-\s][a-zA-Z0-9_\s-]+$" placeholder="Name" required>
+                    <input id="user-password" type="password" name="pass" placeholder="Password" autocomplete="new-password" required>
+                    <input id="user-re-password" type="password" name="pass" placeholder="Retype Password" autocomplete="new-password" required>
+                    <select id="user-select-role" name="" id="" class="select-role" required></select>
+                    <input type="submit" value="Save">
+                </div>
+            </form>
+        </div>
+        
+        <div id="response-dialog" class="standard-modal">
+            <div class="response-dialog-content">
+                <div class="standard-header">
+                </div>
+
+                <div>
+                    <section class="standard-section">
+                        <span class="response-dialog-text"></span>
+                    </section>
+
+                    <section class="standard-section">
+                        <button class="response-dialog-confirm-bttn">Confirm</button>
+                    </section>
+                </div>
+            </div>
+        </div>
         
         
         <script src="assets/js/user.js"></script>

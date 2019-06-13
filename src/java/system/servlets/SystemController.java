@@ -36,6 +36,7 @@ import system.valueobject.Item;
 import system.valueobject.ItemArchive;
 import system.valueobject.ItemLog;
 import system.valueobject.LogType;
+import system.valueobject.Role;
 import system.valueobject.SystemLog;
 import system.valueobject.Transaction;
 import system.valueobject.TransactionDetail;
@@ -136,6 +137,9 @@ public class SystemController extends HttpServlet {
                     break;
                 case "LIST_USER": 
                     listUser(request, response);
+                    break;
+                case "ADD_USER": 
+                    addUser(request, response);
                     break;
                 case "LIST_USER_BY_ID": 
                     listUserById(request, response);
@@ -567,6 +571,34 @@ public class SystemController extends HttpServlet {
         PrintWriter out = response.getWriter();
         String json = gson.toJson(user);
         out.println(json);
+    }
+
+    private void addUser(HttpServletRequest request, HttpServletResponse response) throws Exception{
+        
+        String params = request.getParameter("params");
+        JsonObject jsonObj = new JsonParser().parse(params).getAsJsonObject();
+        
+        User user = new User();
+        user.setName(jsonObj.get("name").getAsString());
+        user.setPassword(jsonObj.get("password").getAsString());
+        user.setUsername(jsonObj.get("username").getAsString());
+        
+        JsonObject roleObj = new JsonObject();
+        roleObj.addProperty("id", jsonObj.get("role").getAsInt());
+        Map roleMap = dbUtil.genericQuery("role", roleObj);
+        
+        Role role = new Role();
+        role.setId((int) roleMap.get("id"));
+        role.setName((String) roleMap.get("name"));
+        user.setRole(role);
+                
+        String message = dbUtil.addUser(user);
+        
+        response.setContentType("plain/text");
+        PrintWriter out = response.getWriter();
+        out.println(message);
+        
+        
     }
     
 }

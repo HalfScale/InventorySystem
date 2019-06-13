@@ -12,6 +12,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
         <link type="text/css" rel="stylesheet" href="../assets/css/side-nav.css">
+        <link type="text/css" rel="stylesheet" href="../assets/css/icons.css">
+        <link type="text/css" rel="stylesheet" href="../assets/css/side-nav.css">
         <link type="text/css" rel="stylesheet" href="../assets/css/util.css">
         <link type="text/css" rel="stylesheet" href="../assets/css/general.css">
         <script src="../assets/js/util.js"></script>
@@ -25,12 +27,12 @@
     <body>
         <div>
         <div class="side-nav">
-            <a href="${pageContext.request.contextPath}/system-home/home.jsp">Home</a>
-            <a href="${pageContext.request.contextPath}/system-pos/pos.jsp">POS</a>
-            <a href="${pageContext.request.contextPath}/system-inventory/inventory.jsp">Inventory</a>
-            <a href="${pageContext.request.contextPath}/system-user/user.jsp">Users</a>
-            <a href="${pageContext.request.contextPath}/system/system-log.jsp">System Logs</a>
-            <a href="${logoutURL}">Logout</a>
+            <a href="${pageContext.request.contextPath}/system-home/home.jsp"> <div id="home-nav-icon"></div> Home</a>
+            <a href="${pageContext.request.contextPath}/system-pos/pos.jsp"> <div id="pos-nav-icon"></div> POS</a>
+            <a href="${pageContext.request.contextPath}/system-inventory/inventory.jsp"> <div id="inventory-nav-icon"></div> Inventory</a>
+            <a href="${pageContext.request.contextPath}/system-user/user.jsp"> <div id="user-nav-icon"></div> Users</a>
+            <a href="${pageContext.request.contextPath}/system/system-log.jsp"> <div id="log-nav-icon"></div>  Logs</a>
+            <a href="${logoutURL}"> <div id="logout-nav-icon"></div> Logout</a>
         </div>
     </body>
 </html>
