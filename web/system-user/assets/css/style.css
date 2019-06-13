@@ -14,7 +14,7 @@ body {
 }
 
 input[type=text], input[type=submit], input[type=button]
-, .select-generic{
+, input[type=password], .select-role{
     width: 100%;
     box-sizing: border-box;
     padding: 8px 5px;
@@ -84,12 +84,26 @@ th {
 }
 
 .form-header {
-	padding: 10px;
-	text-align: right;
-	background-color: #be2213;
+    padding: 10px;
+    text-align: right;
+    background-color: #be2213;
 }
 
 #role-table tr{
     background-color: #fff;
 }
 
+#user-form {
+    width: 400px;
+    margin: 0 auto;
+    background-color: #ffffff;
+}
+
+#user-form-content{
+    padding: 10px;
+}
+
+.standard-header{
+    background-color: #be2213;
+    padding: 15px;
+}

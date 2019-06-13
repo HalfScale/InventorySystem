@@ -1,0 +1,41 @@
+#home-nav-icon {
+    background-image: url('../icon/home.png');
+    height: 32px;
+    width: 32px;
+    display: inline-block;
+}
+
+#pos-nav-icon {
+    background-image: url('../icon/cashbox.png');
+    height: 32px;
+    width: 32px;
+    display: inline-block;
+}
+
+#inventory-nav-icon {
+    background-image: url('../icon/box.png');
+    height: 32px;
+    width: 32px;
+    display: inline-block;
+}
+
+#user-nav-icon {
+    background-image: url('../icon/user.png');
+    height: 32px;
+    width: 32px;
+    display: inline-block;
+}
+
+#log-nav-icon {
+    background-image: url('../icon/note.png');
+    height: 32px;
+    width: 32px;
+    display: inline-block;
+}
+
+#logout-nav-icon {
+    background-image: url('../icon/logout.png');
+    height: 32px;
+    width: 32px;
+    display: inline-block;
+}
