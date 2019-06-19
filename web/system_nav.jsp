@@ -32,6 +32,7 @@
             <a href="${pageContext.request.contextPath}/system-inventory/inventory.jsp"> <div id="inventory-nav-icon"></div> Inventory</a>
             <a href="${pageContext.request.contextPath}/system-user/user.jsp"> <div id="user-nav-icon"></div> Users</a>
             <a href="${pageContext.request.contextPath}/system/system-log.jsp"> <div id="log-nav-icon"></div>  Logs</a>
+            <a href="${pageContext.request.contextPath}/system-reports/reports.jsp"> <div id="report-nav-icon"></div>  Reports</a>
             <a href="${logoutURL}"> <div id="logout-nav-icon"></div> Logout</a>
         </div>
     </body>
