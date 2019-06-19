@@ -39,3 +39,10 @@
     width: 32px;
     display: inline-block;
 }
+
+#report-nav-icon{
+    background-image: url('../icon/analysis.png');
+    height: 32px;
+    width: 32px;
+    display: inline-block;
+}
