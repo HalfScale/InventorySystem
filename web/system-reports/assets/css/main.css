@@ -1,0 +1,20 @@
+.view-content{
+    margin-left: 160px;
+}
+
+.report-box{
+    height: 150px;
+    width: 150px;
+    background-color: #be2213;
+    margin: 5px;
+    text-align: center;
+}
+
+.report-box-label{
+    font-size: 150%;
+    color: #fff;
+}
+
+#date-picker-dialog > span {
+    padding: 5px;
+}
