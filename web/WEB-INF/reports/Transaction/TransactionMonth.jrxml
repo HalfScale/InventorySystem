@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="03955ee4-78ec-401f-9a5e-ee35371acd38">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="month" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="year" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\marwi\\Documents\\NetBeansProjects\\InventorySystem\\web\\WEB-INF\\reports\\Transaction\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from transaction where month(timestamp) = $P{month} 
+and year(timestamp) = $P{year}]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="type" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="total_amount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="total_quantity" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="timestamp" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="163" splitType="Stretch">
+			<textField pattern="#,##0.00">
+				<reportElement x="100" y="20" width="702" height="20" uuid="4fd76fe7-26b3-442b-917a-d63fe3129575"/>
+				<textFieldExpression><![CDATA[$F{total_amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="60" width="702" height="20" uuid="1da45764-6590-42d1-8b30-9853f6ece5b3"/>
+				<textFieldExpression><![CDATA[$F{total_quantity}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy hh:mm:ss a">
+				<reportElement x="100" y="80" width="702" height="20" uuid="df6f0c98-847a-4d4d-b4d5-18c2ce7110ec"/>
+				<textFieldExpression><![CDATA[$F{timestamp}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="40" width="100" height="20" uuid="a8f31ea1-28d9-4b86-ba40-f8da531589dd"/>
+				<textFieldExpression><![CDATA[$F{type}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="0" y="110" width="200" height="41" uuid="d717c4a3-9c32-4d5d-924d-94d97edf5f48"/>
+				<subreportParameter name="transaction_id">
+					<subreportParameterExpression><![CDATA[$F{id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "TransactionMonth_subreport.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement x="100" y="0" width="702" height="20" uuid="7b2cea7d-8bf9-4593-afa2-6c0545ea4617"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="40" width="100" height="20" uuid="b8c5ab2b-4155-4f99-9988-c89cd183208d"/>
+				<text><![CDATA[Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="b5a3f416-ea4a-41b5-a69e-c1fd8d0b1745"/>
+				<text><![CDATA[TRANSACTION #]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="100" height="20" uuid="b20cabbc-d3aa-4bad-b408-3f7e2f46c568"/>
+				<text><![CDATA[Total Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="60" width="100" height="20" uuid="516ad80f-36f2-4f01-90c5-39a1172c479a"/>
+				<text><![CDATA[Total Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="80" width="100" height="20" uuid="17d33185-6a77-4b98-bbbc-6b95df94d93b"/>
+				<text><![CDATA[Timestamp]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

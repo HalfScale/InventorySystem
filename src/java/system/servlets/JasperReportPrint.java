@@ -5,6 +5,9 @@
  */
 package system.servlets;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,6 +16,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -21,6 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -35,8 +41,8 @@ import system.util.Console;
  *
  * @author marwin
  */
-@WebServlet(name = "FileController", urlPatterns = {"/FileController"})
-public class FileController extends HttpServlet {
+@WebServlet(name = "JasperReportPrint", urlPatterns = {"/JasperReportPrint"})
+public class JasperReportPrint extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -53,20 +59,33 @@ public class FileController extends HttpServlet {
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
-        Console.log("Inside FileController");
         
         Connection c = null;
+        final String filename = request.getParameter("filename");
+        final String module = request.getParameter("module");
+        final String jrxml = request.getServletContext().getRealPath("WEB-INF/reports/" + module  + "/" +  filename + ".jrxml");
+        
         try {
-            
             c = datasource.getConnection();
-            String jrxml = request.getServletContext().getRealPath("assets/reports/test.jrxml");
             Console.log("is file existing?", new File(jrxml).exists());
             InputStream input = new FileInputStream(new File(jrxml));
+            
             
             //Generating report
             JasperReport jasperReport = JasperCompileManager.compileReport(input);
             
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, c);
+            //Get additional parameters for the report
+            Map<String, Object> parameters = getParameters(request);
+            
+            if(parameters.isEmpty()) {
+                Console.log("Parameters are empty");
+            }
+            for(Map.Entry entry: parameters.entrySet()) {
+                Console.log("key:", entry.getKey(), "value:", entry.getValue());
+            }
+            
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, c);
+            
             
             SimpleExporterInput in = new SimpleExporterInput(jasperPrint);
             SimpleOutputStreamExporterOutput out = new SimpleOutputStreamExporterOutput(response.getOutputStream());
@@ -139,5 +158,19 @@ public class FileController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+    
+    private Map getParameters(HttpServletRequest request) {
+        String params = request.getParameter("params");
+        Map reportParams = new HashMap();
+        
+        if (params != null && !params.trim().isEmpty()) {
+            JsonObject obj = new JsonParser().parse(params).getAsJsonObject();
 
+            for(Map.Entry<String, JsonElement> entry: obj.entrySet()) {
+                reportParams.put(entry.getKey(), entry.getValue().getAsString());
+            }
+        }
+        
+        return reportParams;
+    }
 }

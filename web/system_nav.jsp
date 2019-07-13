@@ -10,13 +10,23 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        
         <link type="text/css" rel="stylesheet" href="../assets/css/side-nav.css">
         <link type="text/css" rel="stylesheet" href="../assets/css/icons.css">
         <link type="text/css" rel="stylesheet" href="../assets/css/side-nav.css">
         <link type="text/css" rel="stylesheet" href="../assets/css/util.css">
         <link type="text/css" rel="stylesheet" href="../assets/css/general.css">
+        
+        <!--JQUERY UI CSS-->
+        <link type="text/css" rel="stylesheet" href="../assets/css/jquery-ui/jquery-ui.css">
+        <link type="text/css" rel="stylesheet" href="../assets/css/jquery-ui/jquery-ui.structure.css">
+        <link type="text/css" rel="stylesheet" href="../assets/css/jquery-ui/jquery-ui.theme.css">
+        
         <script src="../assets/js/util.js"></script>
+        <script src="../assets/js/jquery-3.4.1.js"></script>
+        
+        <!--JQUERY UI JS-->
+        <script src="../assets/js/jquery-ui/jquery-ui.js"></script>
     </head>
     
     <c:url var="logoutURL" value="/SystemController">

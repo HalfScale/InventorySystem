@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TransactionMonth_subreport" language="groovy" pageWidth="802" pageHeight="555" orientation="Landscape" columnWidth="802" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f220206e-54a1-4a84-bbb6-7f62bd810e3a">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="transaction_id" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from transaction_detail td
+inner join item i
+on i.id = td.item_id and
+transaction_id = $P{transaction_id};]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="transaction_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="item_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="quantity" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="total_amount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="is_reseller_price" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="code" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="brand" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="category" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="description" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="price" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="reseller_price" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="stock" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<pageHeader>
+		<band height="41">
+			<staticText>
+				<reportElement x="1" y="0" width="155" height="20" uuid="4f8585fc-0bf5-43ae-888b-bc2f6e8766dd"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TRANSACTION DETAILS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="645" y="20" width="157" height="20" uuid="2c2f0d3b-7a89-42ce-9629-91b1046539e9"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Total Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="123" y="20" width="78" height="20" uuid="f10ee292-ab34-432a-8d5a-5bbb65b03407"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Brand]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="201" y="20" width="81" height="20" uuid="ec527f07-fe29-4f63-9f1b-efb09f6b0bf9"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Category]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="282" y="20" width="105" height="20" uuid="e562c48e-e302-42fd-864b-4584833a03d1"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Price]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="387" y="20" width="114" height="20" uuid="d4afee9e-f9fe-4c4e-9cd7-92712eab68b5"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Reseller Price]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="501" y="20" width="44" height="20" uuid="bbd083bc-f540-4080-ae40-751b7f4eadee"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Reseller]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="545" y="20" width="100" height="20" uuid="7e3d1efa-22c6-49e7-87e2-e547b01ba8d9"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="123" height="20" uuid="d419d1d7-c954-4801-8d78-0270b7353c03"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Name]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="0" width="123" height="20" uuid="be032a79-80cd-4349-9cde-8ed00c3e31eb"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="545" y="0" width="100" height="20" uuid="2bff12b5-4a4d-47cf-91e7-cbcd7eabdf06"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="645" y="0" width="157" height="20" uuid="f929ccdb-d11a-4442-9883-95e2db7ca69e"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{total_amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="123" y="0" width="78" height="20" uuid="26b1fedf-456d-4b4c-84b1-12046c7d6c1e"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{brand}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="201" y="0" width="81" height="20" uuid="6410a0a4-d263-4c70-a334-f79b9684b9a7"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{category}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="282" y="0" width="105" height="20" uuid="37a4b2e2-d195-4426-b748-1e3085deaca0"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{price}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="387" y="0" width="114" height="20" uuid="1bf1a524-3863-402f-b334-b882f485f1db"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{reseller_price}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="501" y="0" width="44" height="20" uuid="0f878daf-31d7-48db-9588-1961938c0017"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{is_reseller_price}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

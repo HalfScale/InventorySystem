@@ -29,6 +29,10 @@
     justify-content: flex-end;
 }
 
+.justify-evenly{
+    
+}
+
 /*TEXT UTILS*/
 .white-text{
     color: #ffffff;
@@ -45,4 +49,10 @@
 /*COLOR UTILS*/
 .white-bg{
     background-color: #ffffff;
+}
+
+/*DATE PICKER UTIL*/
+
+.month-picker{
+    display: none;
 }
