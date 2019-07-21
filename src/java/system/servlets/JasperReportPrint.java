@@ -63,10 +63,13 @@ public class JasperReportPrint extends HttpServlet {
         Connection c = null;
         final String filename = request.getParameter("filename");
         final String module = request.getParameter("module");
-        final String jrxml = request.getServletContext().getRealPath("WEB-INF/reports/" + module  + "/" +  filename + ".jrxml");
+        Console.log("filename", filename);
+        Console.log("module", module);
+        final String jrxml = request.getServletContext().getRealPath("/WEB-INF/reports/" + module  + "/" +  filename + ".jrxml");
         
         try {
             c = datasource.getConnection();
+            
             Console.log("is file existing?", new File(jrxml).exists());
             InputStream input = new FileInputStream(new File(jrxml));
             

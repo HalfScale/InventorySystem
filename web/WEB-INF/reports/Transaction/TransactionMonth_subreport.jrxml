@@ -7,51 +7,31 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select * from transaction_detail td
-inner join item i
-on i.id = td.item_id and
-transaction_id = $P{transaction_id};]]>
+		<![CDATA[select i.name, b.name as brand, c.name as category, i.price,
+i.reseller_price, td.is_reseller_price, td.quantity, td.total_amount
+from transaction_detail td inner join item i on i.id = td.item_id
+inner join brand b on b.id = i.brand
+inner join category c on c.id = i.category
+and transaction_id = $P{transaction_id}]]>
 	</queryString>
-	<field name="id" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="transaction_id" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="item_id" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="quantity" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="total_amount" class="java.math.BigDecimal">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="is_reseller_price" class="java.lang.Boolean">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
 	<field name="name" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="code" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="brand" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="category" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="description" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="brand" class="java.lang.String"/>
+	<field name="category" class="java.lang.String"/>
 	<field name="price" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="reseller_price" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="stock" class="java.lang.Integer">
+	<field name="is_reseller_price" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="quantity" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="total_amount" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<pageHeader>
@@ -106,18 +86,18 @@ transaction_id = $P{transaction_id};]]>
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="25" splitType="Stretch">
+		<band height="29" splitType="Stretch">
 			<textField>
 				<reportElement x="1" y="0" width="123" height="20" uuid="be032a79-80cd-4349-9cde-8ed00c3e31eb"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,##0">
 				<reportElement x="545" y="0" width="100" height="20" uuid="2bff12b5-4a4d-47cf-91e7-cbcd7eabdf06"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,##0.00">
 				<reportElement x="645" y="0" width="157" height="20" uuid="f929ccdb-d11a-4442-9883-95e2db7ca69e"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{total_amount}]]></textFieldExpression>
@@ -132,12 +112,12 @@ transaction_id = $P{transaction_id};]]>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{category}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,##0.00">
 				<reportElement x="282" y="0" width="105" height="20" uuid="37a4b2e2-d195-4426-b748-1e3085deaca0"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{price}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,##0.00">
 				<reportElement x="387" y="0" width="114" height="20" uuid="1bf1a524-3863-402f-b334-b882f485f1db"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{reseller_price}]]></textFieldExpression>

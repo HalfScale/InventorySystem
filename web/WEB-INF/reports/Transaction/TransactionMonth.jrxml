@@ -10,18 +10,18 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["C:\\Users\\marwi\\Documents\\NetBeansProjects\\InventorySystem\\web\\WEB-INF\\reports\\Transaction\\"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["C:\\Users\\MacMuffin\\Documents\\NetBeansProjects\\InventorySystem\\web\\WEB-INF\\reports\\Transaction\\"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select * from transaction where month(timestamp) = $P{month} 
-and year(timestamp) = $P{year}]]>
+		<![CDATA[select t.id, tt.name as type, t.total_amount, t.total_quantity, t.timestamp
+from `transaction` t inner join `transaction_type` tt
+on t.type = tt.id and month(t.timestamp) = $P{month}
+and  year(t.timestamp) = $P{year}]]>
 	</queryString>
 	<field name="id" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="type" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="type" class="java.lang.String"/>
 	<field name="total_amount" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
@@ -32,22 +32,34 @@ and year(timestamp) = $P{year}]]>
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<title>
-		<band height="79" splitType="Stretch"/>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="28" width="802" height="20" uuid="13517a0d-1df9-4e68-954f-da0970067669"/>
+				<textElement textAlignment="Center">
+					<font size="13"/>
+				</textElement>
+				<text><![CDATA[Transactions for]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="802" height="28" uuid="75f37aae-f26d-484f-ba3f-a9f4a2a14014"/>
+				<textElement textAlignment="Center">
+					<font size="20"/>
+				</textElement>
+				<text><![CDATA[Cole Anne's Motorcycle Shop]]></text>
+			</staticText>
+		</band>
 	</title>
-	<pageHeader>
-		<band height="35" splitType="Stretch"/>
-	</pageHeader>
 	<detail>
 		<band height="163" splitType="Stretch">
 			<textField pattern="#,##0.00">
 				<reportElement x="100" y="20" width="702" height="20" uuid="4fd76fe7-26b3-442b-917a-d63fe3129575"/>
 				<textFieldExpression><![CDATA[$F{total_amount}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="#,##0">
 				<reportElement x="100" y="60" width="702" height="20" uuid="1da45764-6590-42d1-8b30-9853f6ece5b3"/>
 				<textFieldExpression><![CDATA[$F{total_quantity}]]></textFieldExpression>
 			</textField>
-			<textField pattern="MMMMM dd, yyyy hh:mm:ss a">
+			<textField pattern="MMMMM dd, yyyy - hh:mm:ss a">
 				<reportElement x="100" y="80" width="702" height="20" uuid="df6f0c98-847a-4d4d-b4d5-18c2ce7110ec"/>
 				<textFieldExpression><![CDATA[$F{timestamp}]]></textFieldExpression>
 			</textField>
@@ -55,24 +67,19 @@ and year(timestamp) = $P{year}]]>
 				<reportElement x="100" y="40" width="100" height="20" uuid="a8f31ea1-28d9-4b86-ba40-f8da531589dd"/>
 				<textFieldExpression><![CDATA[$F{type}]]></textFieldExpression>
 			</textField>
-			<subreport>
-				<reportElement x="0" y="110" width="200" height="41" uuid="d717c4a3-9c32-4d5d-924d-94d97edf5f48"/>
-				<subreportParameter name="transaction_id">
-					<subreportParameterExpression><![CDATA[$F{id}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "TransactionMonth_subreport.jasper"]]></subreportExpression>
-			</subreport>
 			<textField>
 				<reportElement x="100" y="0" width="702" height="20" uuid="7b2cea7d-8bf9-4593-afa2-6c0545ea4617"/>
 				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="40" width="100" height="20" uuid="b8c5ab2b-4155-4f99-9988-c89cd183208d"/>
-				<text><![CDATA[Type]]></text>
+				<text><![CDATA[Transaction Type]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="0" width="100" height="20" uuid="b5a3f416-ea4a-41b5-a69e-c1fd8d0b1745"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[TRANSACTION #]]></text>
 			</staticText>
 			<staticText>
@@ -87,6 +94,14 @@ and year(timestamp) = $P{year}]]>
 				<reportElement x="0" y="80" width="100" height="20" uuid="17d33185-6a77-4b98-bbbc-6b95df94d93b"/>
 				<text><![CDATA[Timestamp]]></text>
 			</staticText>
+			<subreport>
+				<reportElement x="18" y="110" width="200" height="53" uuid="51e85a61-02ed-4164-93d5-acc2876f6d66"/>
+				<subreportParameter name="transaction_id">
+					<subreportParameterExpression><![CDATA[$F{id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "TransactionMonth_subreport.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</detail>
 </jasperReport>

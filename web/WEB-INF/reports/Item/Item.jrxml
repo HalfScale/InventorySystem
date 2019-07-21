@@ -1,29 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="536680cf-a6e5-4c73-9278-0fcd6d89847b">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="536680cf-a6e5-4c73-9278-0fcd6d89847b">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<queryString>
-		<![CDATA[select * from item]]>
+		<![CDATA[select i.name, i.code, b.name as brand, c.name as category, i.price, i.reseller_price, i.stock from item i
+inner join brand b on i.brand = b.id
+inner join category c on i.category = c.id;]]>
 	</queryString>
-	<field name="id" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
 	<field name="name" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="code" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="brand" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="category" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="description" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="brand" class="java.lang.String"/>
+	<field name="category" class="java.lang.String"/>
 	<field name="price" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
@@ -34,56 +26,106 @@
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<title>
-		<band height="79" splitType="Stretch"/>
+		<band height="86" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="802" height="31" uuid="c6ae5579-4091-4d21-bf3f-d42d22a51c5f"/>
+				<textElement textAlignment="Center">
+					<font size="20"/>
+				</textElement>
+				<text><![CDATA[Cole Anne's Motorcycle Shop
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="31" width="802" height="25" uuid="0daf1dc0-ce15-4a2c-b4bb-7f7ec6a8261f"/>
+				<textElement textAlignment="Center">
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Inventory Stocks]]></text>
+			</staticText>
+			<textField pattern="EEEEE MMMMM dd yyyy">
+				<reportElement x="0" y="56" width="802" height="30" uuid="80a7d2b5-2805-4623-a60f-e03a7120c376"/>
+				<textElement textAlignment="Center">
+					<font size="15" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
 	</title>
-	<pageHeader>
-		<band height="35" splitType="Stretch"/>
-	</pageHeader>
 	<columnHeader>
-		<band height="61" splitType="Stretch">
+		<band height="42" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="41" width="100" height="20" uuid="af7ddfa7-f103-4109-ab8d-033cb8827804"/>
-				<text><![CDATA[name]]></text>
+				<reportElement x="0" y="22" width="159" height="20" uuid="af7ddfa7-f103-4109-ab8d-033cb8827804"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[NAME]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="100" y="41" width="100" height="20" uuid="aae00fac-cca6-44a9-91d8-93785f4820d4"/>
-				<text><![CDATA[code]]></text>
+				<reportElement x="159" y="22" width="114" height="20" uuid="aae00fac-cca6-44a9-91d8-93785f4820d4"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[CODE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="200" y="41" width="100" height="20" uuid="fdbfa27a-fdee-417e-b6fe-52667b4c4ceb"/>
-				<text><![CDATA[brand]]></text>
+				<reportElement x="273" y="22" width="100" height="20" uuid="fdbfa27a-fdee-417e-b6fe-52667b4c4ceb"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[BRAND]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="300" y="41" width="100" height="20" uuid="7fdfae37-bf5b-4bb5-bf16-9568761a5b03"/>
-				<text><![CDATA[price]]></text>
+				<reportElement x="373" y="22" width="100" height="20" uuid="7fdfae37-bf5b-4bb5-bf16-9568761a5b03"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[CATEGORY]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="400" y="41" width="100" height="20" uuid="27a40481-1030-4ac6-9f16-45486e1ed2b8"/>
-				<text><![CDATA[reseller_price]]></text>
+				<reportElement x="690" y="22" width="112" height="20" uuid="27a40481-1030-4ac6-9f16-45486e1ed2b8"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[RESELLER PRICE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="473" y="22" width="100" height="20" uuid="e339559c-f31d-42ea-ae38-a99c9441aa2c"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[STOCK]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="573" y="22" width="117" height="20" uuid="d1977e69-c459-4f82-83db-d7d4abfe5ab7"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[PRICE]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="33" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="100" height="20" uuid="f41207b0-97f9-43a1-bc2e-8b055f7a50af"/>
+				<reportElement x="0" y="0" width="159" height="20" uuid="357585d7-a3e2-44e9-b062-67747d0c3770"/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="100" y="0" width="100" height="20" uuid="45c99676-ca7d-4caa-a15a-a1bd435d7119"/>
+				<reportElement x="159" y="0" width="114" height="20" uuid="562c41b9-ab7e-4500-8885-83b79afa2ffa"/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="200" y="0" width="100" height="20" uuid="3be3dcbd-7889-400d-9cb7-32093e9d9a61"/>
+				<reportElement x="273" y="0" width="100" height="20" uuid="4401edaa-0646-4667-b385-27e47f69c4c3"/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{brand}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="300" y="0" width="100" height="20" uuid="5402eb34-f17c-4b25-8e73-035a02b4812f"/>
+				<reportElement x="373" y="0" width="100" height="20" uuid="3ac78afb-af26-4577-89ef-7a239f55d993"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{category}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="573" y="0" width="117" height="20" uuid="5634870f-b242-4ede-a41b-9b117bfdec4d"/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{price}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="400" y="0" width="100" height="20" uuid="b7012c51-7c29-49fb-9edf-2379a1f2da78"/>
+			<textField pattern="#,##0.00">
+				<reportElement x="690" y="0" width="112" height="20" uuid="7f091109-4afb-4bd3-8fe5-58e15ad92f21"/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{reseller_price}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="473" y="0" width="100" height="20" uuid="c1a35684-d0ff-46e4-8ead-e983d6ffb895"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{stock}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
