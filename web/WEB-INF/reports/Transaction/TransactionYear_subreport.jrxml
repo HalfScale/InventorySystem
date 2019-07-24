@@ -7,13 +7,16 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[select i.name, b.name as brand, c.name as category, i.price,
+		<![CDATA[select transaction_id, i.name, b.name as brand, c.name as category, i.price,
 i.reseller_price, td.is_reseller_price, td.quantity, td.total_amount
 from transaction_detail td inner join item i on i.id = td.item_id
 inner join brand b on b.id = i.brand
 inner join category c on c.id = i.category
 and transaction_id = $P{transaction_id}]]>
 	</queryString>
+	<field name="transaction_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="name" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
@@ -34,57 +37,60 @@ and transaction_id = $P{transaction_id}]]>
 	<field name="total_amount" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<columnHeader>
-		<band height="50">
-			<staticText>
-				<reportElement x="0" y="10" width="147" height="20" uuid="d3265c7a-3bea-43f8-b231-75e66f42ecaa"/>
-				<textElement textAlignment="Center"/>
-				<text><![CDATA[TRANSACTION DETAILS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="30" width="131" height="20" uuid="136e529e-fff5-4dd9-a498-16b4d124afe0"/>
-				<textElement textAlignment="Center"/>
-				<text><![CDATA[Name]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="131" y="30" width="100" height="20" uuid="0a67af9f-bd60-453d-b4eb-b104435283d5"/>
-				<textElement textAlignment="Center"/>
-				<text><![CDATA[Brand]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="231" y="30" width="100" height="20" uuid="afa5fb23-ce09-493f-8445-058e6a5cea6b"/>
-				<textElement textAlignment="Center"/>
-				<text><![CDATA[Category]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="331" y="30" width="100" height="20" uuid="767c1c10-d977-4e02-8b1a-3c270e6bed81"/>
-				<textElement textAlignment="Center"/>
-				<text><![CDATA[Price]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="431" y="30" width="100" height="20" uuid="7b1c3753-179f-4629-b35d-a90ba873bebc"/>
-				<textElement textAlignment="Center"/>
-				<text><![CDATA[Reseller_Price]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="531" y="30" width="38" height="20" uuid="2fefb7d4-6e45-4703-92a1-17b29de51e54"/>
-				<textElement textAlignment="Center"/>
-				<text><![CDATA[Reseller]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="669" y="30" width="133" height="20" uuid="e604eac6-88f2-4990-ae04-041b2a950b28"/>
-				<textElement textAlignment="Center"/>
-				<text><![CDATA[Total_Amount]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="569" y="30" width="100" height="20" uuid="55381e7a-dcd5-48dd-964e-0898dfe6b438"/>
-				<textElement textAlignment="Center"/>
-				<text><![CDATA[Quantity]]></text>
-			</staticText>
-		</band>
-	</columnHeader>
+	<group name="Transaction Detail Group">
+		<groupExpression><![CDATA[$F{transaction_id}]]></groupExpression>
+		<groupHeader>
+			<band height="56">
+				<staticText>
+					<reportElement x="0" y="30" width="131" height="20" uuid="136e529e-fff5-4dd9-a498-16b4d124afe0"/>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[Name]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="131" y="30" width="100" height="20" uuid="0a67af9f-bd60-453d-b4eb-b104435283d5"/>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[Brand]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="231" y="30" width="100" height="20" uuid="afa5fb23-ce09-493f-8445-058e6a5cea6b"/>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[Category]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="331" y="30" width="100" height="20" uuid="767c1c10-d977-4e02-8b1a-3c270e6bed81"/>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[Price]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="431" y="30" width="100" height="20" uuid="7b1c3753-179f-4629-b35d-a90ba873bebc"/>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[Reseller_Price]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="531" y="30" width="38" height="20" uuid="2fefb7d4-6e45-4703-92a1-17b29de51e54"/>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[Reseller]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="669" y="30" width="133" height="20" uuid="e604eac6-88f2-4990-ae04-041b2a950b28"/>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[Total_Amount]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="569" y="30" width="100" height="20" uuid="55381e7a-dcd5-48dd-964e-0898dfe6b438"/>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[Quantity]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="10" width="147" height="20" uuid="d3265c7a-3bea-43f8-b231-75e66f42ecaa"/>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[TRANSACTION DETAILS]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
 	<detail>
-		<band height="35" splitType="Stretch">
+		<band height="20" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="131" height="20" uuid="7fff3d50-f345-4016-9e30-24803611ceb0"/>
 				<textElement textAlignment="Center"/>
