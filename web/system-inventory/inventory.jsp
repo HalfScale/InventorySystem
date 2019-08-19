@@ -378,6 +378,6 @@
             </div>
         </div>
      
-    <script src="assets/js/inventory.js"></script>
+    <script src="assets/script/inventory.js"></script>
     </body>
 </html>
