@@ -1,3 +1,4 @@
 # InventorySystem
 
-Working on a particular inventory system
+A simple inventory system using CSS, HTML, Javascript, JQuery, Jsp and Servlets.
+With JasperReports integration.
